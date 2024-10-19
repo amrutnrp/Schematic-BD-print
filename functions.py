@@ -9,17 +9,7 @@ import numpy as np
 
 glue_string = "@"
 
-def validate_rect(string):
-    if type(string) == str:
-        str2 = string.split('\n')
-        len_I = [   len(i) for i in str2]
-    elif type(string) == list:
-        len_I = [   len(i) for i in string]
-    else:
-        print ('FATAL error in rectangle check ')
-    len_all = set (len_I )
-    return True if len(len_all) == 1 else False
-
+from Debug_functions import *
 
 def str_2D(string, option = 1):
     """
@@ -87,8 +77,14 @@ def pre_pad(str1, str2, horizontal = True, pad_plus = True, dirn = 'w', swap = F
         returns two strings that can be joined later
 
     """
-    A = str_2D (str1, 1)
-    B = str_2D (str2, 1)
+    # from 1-if -> 2-if -> Copy -> return
+    # to 1-if -> Copy
+    if type(str1) == str or type(str2) == str:
+        A = str_2D (str1, 1)
+        B = str_2D (str2, 1)
+    else:
+        A = str1.copy()
+        B = str2.copy()
     if swap == True: A, B= B, A
 
     pad_ch = ' '
@@ -145,9 +141,6 @@ def join_2Dstr(str1, str2, horizontal = True):
         return str1 + str2
 
 
-def view_str(string):
-    print ( '\n' .join (string ) )
-
 def add_tape(string, side = 'n'):
     """  side can n, s ,w, e , for each direction """
     if len( string ) == 0 or len( string [0] ) == 0:
@@ -166,8 +159,7 @@ def add_tape(string, side = 'n'):
             L =len( string [0] )
             return join_2Dstr (  string,[glue_string*L ], False  )
 
-def shape(string):
-    return len(string), len(string [0])
+
 
 def make_cap_block (cap_list , tok2_dict_local = {},  width_limit = 30 , dirn = 'w', child_flag= False):
     """

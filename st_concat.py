@@ -4,7 +4,7 @@ Created on Wed Oct  2 00:31:03 2024
 
 @author: amrutnp
 """
-from functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pre_pad, str_2D, glue_string
+from string2D_functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pre_pad, str_2D, glue_string
 from __init__ import box_comp_open_v3_top
 
 
@@ -327,9 +327,6 @@ class SCH_plotter:
             C5 = C4
         C6 = build_lines (C5, retain_glue)
 
-
-    #==============================================================================#==============================================================================
-    #==============================================================================#==============================================================================
     #==============================================================================#==============================================================================
         if retain_glue:
             return C5

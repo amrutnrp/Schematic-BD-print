@@ -15,7 +15,7 @@ ls= [7]
 LR_expansion = True
 
 
-from functions import *
+from string2D_functions import *
 from __init__ import *
 from st_concat import SCH_plotter
 
