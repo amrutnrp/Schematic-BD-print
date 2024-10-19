@@ -32,7 +32,7 @@ for i in ls :
     token_adj, rev_LUT, rev_LUT_int = tokenizer_nl_str(adj_list_data)
     print ('===')
 
-    nodes, adj_nodes, prune_depth_trf , adjNodes_index, RES, bond_type_list , broken_edges= prune_algo(token_adj)
+    nodes, adj_nodes, prune_depth_trf , adjNodes_index, RES, bond_type_list , broken_edges, level_depth_trf = prune_algo(token_adj)
     print ('=== prune Done')
 
     #==================================================================================#
@@ -99,7 +99,7 @@ for i in ls :
     for key, value in boxed_series_items.items():
         tok_2_block [ key ] = value
 
-    if max_depth > 10:
+    if max( level_depth_trf) > 4:
         LR_expansion = False
     else:
         LR_expansion = True

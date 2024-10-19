@@ -53,6 +53,7 @@ def prune_algo ( adjacency_list_tok ):
     prune_depth_trf = [0] * node_length
     unsolved_stack = list(range ( node_length) )
     adjNodes_index = [0] * node_length
+    level_depth_trf = [0] * node_length
 
     for idx in range (node_length):                       # Get all the indices so that access time is O(1)
         adjNodes_index[idx] = [0] * len ( adj_nodes [idx] )
@@ -62,7 +63,8 @@ def prune_algo ( adjacency_list_tok ):
 
     for idx in range (node_length):                       # Find leaf nodes and mark them
         if nodes[idx].endswith('C'):                      # if it's a component/ PU set it as Leaf node
-            prune_depth_trf [idx] = 1                     # initial 
+            prune_depth_trf [idx] = 1                     # initial
+            level_depth_trf [idx] = 1
             unsolved_stack.remove(idx)
 
     '''
@@ -73,7 +75,7 @@ def prune_algo ( adjacency_list_tok ):
 
     '''
     # print ('init ', prune_depth_trf)
-    
+
     broken_edges = []
     flag = True
     # cycle_flag = False
@@ -83,9 +85,11 @@ def prune_algo ( adjacency_list_tok ):
         prune_candidates = []
         for i,idx  in enumerate(unsolved_stack):
             adjacent_values[i] = adj_item_local = [ prune_depth_trf [ idx2] for idx2 in adjNodes_index[idx] ]
+            adj_item_level_values = [ level_depth_trf [ idx2] for idx2 in adjNodes_index[idx] ]
             if adj_item_local.count(0 ) > 1  :
                 flag = True
-            else:
+            else:  # adj_item_local.count(0 )  == 1 or 0
+                level_depth_trf [idx] = max ( adj_item_level_values ) +1
                 if len (adj_item_local) == 2: # ---------------   just a bypass , no branch here
                     prune_candidates.append([ idx, sum ( adj_item_local )  ])
                 else:
@@ -93,24 +97,25 @@ def prune_algo ( adjacency_list_tok ):
         for item in prune_candidates:
             idx, trf_value = item
             prune_depth_trf [ idx] = trf_value
+            # level_depth_trf [idx] = 1
             unsolved_stack .remove (idx)
         if len(prune_candidates) == 0:
             print ('Cycle Present in graph, overriding.. ' )
             # cycle_flag = True
             all_trf_values = [ sum(val) for val in adjacent_values  ]   #
-            min_val = min ( all_trf_values )                            # Find any minimum value trf 
+            min_val = min ( all_trf_values )                            # Find any minimum value trf
             i = all_trf_values.index (min_val)                          # Find it's first index
             broken_edges_temp = [ idx:= unsolved_stack [i] ]            #    #Find which edges are broken to make it a tree
-            for j in adjNodes_index[idx]:                               #    #those edges won't be persued later 
+            for j in adjNodes_index[idx]:                               #    #those edges won't be persued later
                 if prune_depth_trf[j] == 0:                             #    #while printing
                     broken_edges_temp.append ( j )                      #    #
             broken_edges.append ( broken_edges_temp)                    #    #
             prune_depth_trf [ unsolved_stack [i] ] = trf_value          # override trf value
             unsolved_stack.pop ( i)                                     # remove it from next iteration
-            
-    return nodes, adj_nodes, prune_depth_trf , adjNodes_index, RES, bond_type_list, broken_edges
-    
-    
+
+    return nodes, adj_nodes, prune_depth_trf , adjNodes_index, RES, bond_type_list, broken_edges, level_depth_trf
+
+
     # # #======================================================================================================
     # # if print_flag :
         # # print (prune_depth_trf)
@@ -172,8 +177,8 @@ def prune_algo ( adjacency_list_tok ):
         # # print (prune_depth_trf)
     # # # del  idx, idx2, idx3,
 
-    
-    
+
+
 
 
 '''
