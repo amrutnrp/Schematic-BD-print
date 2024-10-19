@@ -52,6 +52,9 @@ class SCH_processor():
         for name, value in self.__dict__.items():
             globals()[name] = value
 
+    def get_view (self):
+        return self.S5
+
     def start_processing(self):
         if self.file_process_flag == False:
             print ('File has not been read, no data present')
@@ -190,7 +193,7 @@ class SCH_processor():
 
         _.S5 = str_2D(_.S4, 2)              #convert it into single string
         self.nextstep()
-        make_web_page_nOpen (_.S5, openFlag = False)
+        #
         print ('')
 
 
@@ -199,6 +202,8 @@ for i in ls :
     obj = SCH_processor()
     obj.process_file( paths[i] )
     obj.start_processing()
+    S= obj.get_view()
+    make_web_page_nOpen (S, openFlag = True)
     obj.make_globals()
     view_str(S4)
 
