@@ -9,42 +9,45 @@ Created on Wed Oct  2 00:31:03 2024
 from functions import insert_blank_col_get, insert_blank_row, opp_dir, swap_dir, idx_dir, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pre_pad, str_2D, glue_string, idx_dir_2
 from __init__ import box_comp_open_v3_top
 
-done_nets= []
+
 net_block = '─{}─'
 
-adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block, broken_bonds =  '','','','', '', '', ''
-def store_variables (_1, _2, _3, _4, _5, _6, _7):
-    global adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block, broken_bonds
-    adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_bonds= _1, _2, _3, _4, _5, _6, _7
 
-def set_donenet (inp):
-    global done_nets
-    done_nets = inp
+class SCH_plotter:
+    def __init__(self):
+        self.adjNodes_index,self.bond_type_list, self.nodes, self.rev_LUT , self.RES, self.tok_2_block, self.broken_bonds =  '','','','', '', '', ''
+        self.done_nets= []
 
-def get_donenet():
-    return done_nets
+    def store_variables (self, _1, _2, _3, _4, _5, _6, _7):
+        self.adjNodes_index,self.bond_type_list, self.nodes, self.rev_LUT , self.RES, self.tok_2_block , self.broken_bonds= _1, _2, _3, _4, _5, _6, _7
+
+    def set_donenet (self, inp):
+        self.done_nets = inp
+
+    def get_donenet(self):
+        return self.done_nets
 
 #==============================================================================#==============================================================================
 #==============================================================================#==============================================================================
 #==============================================================================#==============================================================================
 
 
-def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False, netName_override = ''):
+    def ABC(self, net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False, netName_override = ''):
 
-    net2= rev_LUT [ net ] if netName_override == '' else netName_override
+        net2= self.rev_LUT [ net ] if netName_override == '' else netName_override
 
-    node_idx = nodes.index(net)
+        node_idx = self.nodes.index(net)
 
-    # dirn2 = opp_dir ( dirn )
-    swap = swap_dir (dirn)
-    idx_dir2 = idx_dir (dirn)
-    idx_dir3 = idx_dir_2 (dirn)
+        # dirn2 = opp_dir ( dirn )
+        swap = swap_dir (dirn)
+        idx_dir2 = idx_dir (dirn)
+        idx_dir3 = idx_dir_2 (dirn)
 
-    adjIdx_bondName_local = []
-    cmp_gnd  = []
-    cmp_open = []
-    net_res = []
-    net_blocks = []
+        adjIdx_bondName_local = []
+        cmp_gnd  = []
+        cmp_open = []
+        net_res = []
+        net_blocks = []
 
     #=================  discover nodes in graph ===============================   1
     if adjacent_override == None:
