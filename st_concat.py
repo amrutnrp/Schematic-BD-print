@@ -84,13 +84,16 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
     cmp_open = [ nodes [i] for i in cmp_open ]
 
     L1, L2, L3 = len(cmp_gnd), len(cmp_open), len(net_res)
-    child_flag = len(net_res) != 0
 
     if L1 != 0:
         C1= make_cap_block( cmp_gnd, tok_2_block ,30,dirn)
 
     if L2 != 0:
-        C2= make_comp_block ( cmp_open, tok_2_block, 15, dirn ,child_flag= child_flag)
+        C2= make_comp_block ( cmp_open, tok_2_block, 15, dirn)
+        if L3 != 0:
+            C2 = add_tape (  C2 , 'n' )                                        #
+        else:
+            pass                                                               # 0,[1, few, many], x
 
         #===================================   Lift source vs Component ====
         m_lvl_src = source [0][idx_dir2] == ' '

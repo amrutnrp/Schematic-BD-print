@@ -177,7 +177,7 @@ def make_cap_block (cap_list , tok2_dict_local = {},  width_limit = 30 , dirn = 
     return master_str
 
 
-def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn = 'w', child_flag = False):
+def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn = 'w'):
     """
     comp_list: list of component items in token form
     tok2_dict_local : the entire dictionary
@@ -220,7 +220,6 @@ def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn 
             master_str = add_tape (  master_str , 'n' )
         else:
             master_str = str_block[ 0 ]
-            if child_flag: master_str = add_tape (  master_str , 'n' )
     return master_str
 
 
