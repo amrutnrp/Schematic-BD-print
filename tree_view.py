@@ -17,7 +17,7 @@ LR_expansion = True
 
 from string2D_functions import *
 from __init__ import *
-from st_concat import SCH_plotter
+from SCH_plotter import SCH_plotter
 
 for i in ls :
     adj_list_data = []
