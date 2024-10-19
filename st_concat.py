@@ -18,10 +18,45 @@ class SCH_plotter:
         self.adjNodes_index,self.bond_type_list, self.nodes, self.rev_LUT , self.RES, self.tok_2_block, self.broken_bonds =  '','','','', '', '', ''
         self.done_nets= []
 
-    def store_variables (self, _1, _2, _3, _4, _5, _6, _7):
-        self.adjNodes_index,self.bond_type_list, self.nodes, self.rev_LUT , self.RES, self.tok_2_block , self.broken_bonds= _1, _2, _3, _4, _5, _6, _7
+    def set_system_data (self, adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_bonds):
+        """
+        Parameters
+        ----------
+        adjNodes_index : list of lists
+            adjacency list
+        bond_type_list : list of lists
+            bond information stored in the skeletal format of adjacency list
+        nodes : list
+            contains node info, order equivalent to other lists
+        rev_LUT : dict
+            key is token and returns actual netname/resistor/component/capacitor
+        RES : dict of dict
+            put two nets as index , and it'll return the resistor between them, provided they are connected by one
+        tok_2_block : dict
+            contains blocks of basic elements: cap/component/series components
+        broken_bonds : ??
+            DESCRIPTION. ??
+
+        Returns
+        -------
+        None.
+
+        """
+        self.adjNodes_index,self.bond_type_list, self.nodes, self.rev_LUT , self.RES, self.tok_2_block , self.broken_bonds= adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_bonds
 
     def set_donenet (self, inp):
+        """
+        Parameters
+        ----------
+        inp : list
+            a blank list or a list of tokens
+            tokens meaning the token for elements in the schematic
+
+        Returns
+        -------
+        None
+
+        """
         self.done_nets = inp
 
     def get_donenet(self):
@@ -35,8 +70,8 @@ class SCH_plotter:
     def ABC(self, net, dirn = 'w', res = '', adjacent_override = None, retain_glue = False, netName_override = ''):
         """
         retain_glue -> keeps glue character intact for debug
-        
-        
+
+
         """
 
         net2= self.rev_LUT [ net ] if netName_override == '' else netName_override
