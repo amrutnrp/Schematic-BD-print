@@ -4,7 +4,7 @@ Created on Wed Oct  2 00:31:03 2024
 
 @author: amrutnp
 """
-from string2D_functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pre_pad, str_2D, glue_string
+from string2D_functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pad_join_2Dstr, str_2D, glue_string
 from __init__ import box_comp_open_v3_top
 
 
@@ -136,7 +136,7 @@ class SCH_plotter:
             if res_b[0][sf.idx1] == ' ':                  # 3 line resistor, but 1 line net
                 # source.insert(0, ' '*len(source[0]))
                 insert_blank_row(source)
-            source = pre_pad(res_b, source,
+            source = pad_join_2Dstr(res_b, source,
                              horizontal= True, swap= sf.LR_swap_flag,
                              dirn=sf.dirn )
 
@@ -180,7 +180,7 @@ class SCH_plotter:
             if len(net_blocks) > 0:
                 master_str = ''
                 for bloc in net_blocks:
-                    master_str = pre_pad(master_str, bloc,
+                    master_str = pad_join_2Dstr(master_str, bloc,
                                          horizontal= False,  #swap= False
                                          dirn=sf.dirn)
 
@@ -197,7 +197,7 @@ class SCH_plotter:
             if source [0][sf.idx1] == ' ':
                 # C1.insert(0, ' '*len(C1[0]))
                 insert_blank_row(C1)
-            C4 = pre_pad(source, C1,
+            C4 = pad_join_2Dstr(source, C1,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn )
         elif L1 ==0 and L2==1 and L3 != 0:                                         #[1, few, many],1,0
@@ -208,12 +208,12 @@ class SCH_plotter:
             single_comp= str_2D(single_comp, 1)
             single_comp = add_tape( single_comp, 'n')
             if m_lvl_src ==True: insert_blank_row( single_comp )
-            C4 = pre_pad(source, single_comp ,
+            C4 = pad_join_2Dstr(source, single_comp ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn )
             del cmp_0, cmp_0_name,single_comp
         elif L1 ==0:                                                               #x,[few, many],0
-            C4 = pre_pad(source, C2 ,
+            C4 = pad_join_2Dstr(source, C2 ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn,)
         elif L1 ==1 and L2==1 and L3 != 0:                                         #x,1,1
@@ -223,10 +223,10 @@ class SCH_plotter:
             single_comp=  box_comp_open_v3_top(cmp_0_name)
             single_comp= str_2D(single_comp, 1)
             single_comp = add_tape( single_comp, 'n')
-            C3 = pre_pad(C1, single_comp ,
+            C3 = pad_join_2Dstr(C1, single_comp ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.opp_dir )
-            C4 = pre_pad(source, C3 ,
+            C4 = pad_join_2Dstr(source, C3 ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn,)
             # add hook
@@ -236,10 +236,10 @@ class SCH_plotter:
         elif L1 ==1:                                                               #x,x,1
             if m_lvl_src == True :
                 insert_blank_row( C1 )
-            C3 = pre_pad(source, C1 ,
+            C3 = pad_join_2Dstr(source, C1 ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn )
-            C4 = pre_pad(C3, C2 ,
+            C4 = pad_join_2Dstr(C3, C2 ,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn = sf.dirn )
         else:
@@ -286,24 +286,24 @@ class SCH_plotter:
                     C1= insert_blank_col_get(C1, 'w', left_pad)
                     C1= insert_blank_col_get(C1, 'e', right_pad)
 
-                    C3 = pre_pad(source, C2,
+                    C3 = pad_join_2Dstr(source, C2,
                                  horizontal= True, swap= sf.LR_swap_flag,
                                  dirn = latch_direction )
-                    C4 = pre_pad(C3, C1,
+                    C4 = pad_join_2Dstr(C3, C1,
                                  horizontal= False,  #swap= False
                                  dirn = sf.dirn)
                 else:
-                    C3 = pre_pad(source, C1,
+                    C3 = pad_join_2Dstr(source, C1,
                                  horizontal= False,  #swap= False
                                  dirn =  latch_direction )
-                    C4 = pre_pad(C3, C2 ,
+                    C4 = pad_join_2Dstr(C3, C2 ,
                                  horizontal= True, swap= sf.LR_swap_flag,
                                  dirn = sf.dirn )
             else:  # many caps and many components.
-                C3 = pre_pad(source, C1,
+                C3 = pad_join_2Dstr(source, C1,
                              horizontal= False,  #swap= False
                              dirn = sf.opp_dir )
-                C4 = pre_pad(C3, C2,
+                C4 = pad_join_2Dstr(C3, C2,
                              horizontal= True, swap= sf.LR_swap_flag,
                              dirn = sf.dirn )
 
@@ -320,7 +320,7 @@ class SCH_plotter:
             #add a mandatory glue in parent direction
             net_block_master_str = add_tape (  net_block_master_str , sf.dirn )
 
-            C5 = pre_pad(C4, net_block_master_str,
+            C5 = pad_join_2Dstr(C4, net_block_master_str,
                          horizontal= True, swap= sf.LR_swap_flag,
                          dirn= sf.dirn )
         else:

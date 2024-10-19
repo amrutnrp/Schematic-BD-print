@@ -45,7 +45,7 @@ def str_2D(string, option = 1):
         # arr1.resize(  int(len(str3) / L ), L)
         # return arr1
 
-def pre_pad(str1, str2, horizontal = True, pad_plus = True, dirn = 'w', swap = False):
+def pad_join_2Dstr(str1, str2, horizontal = True, pad_plus = True, dirn = 'w', swap = False):
     """
     Parameters
     ----------
@@ -180,7 +180,7 @@ def make_cap_block (cap_list , tok2_dict_local = {},  width_limit = 30 , dirn = 
 
 
         str_iter = str_block [level_ptr]
-        str_result = pre_pad(str_iter, new_str_ln, horizontal= True, pad_plus =True)
+        str_result = pad_join_2Dstr(str_iter, new_str_ln, horizontal= True, pad_plus =True)
         # str_result = join_2Dstr(A, B, horizontal= True)
         str_block [level_ptr] = str_result
         if shape ( str_result ) [1] > width_limit:
@@ -193,7 +193,7 @@ def make_cap_block (cap_list , tok2_dict_local = {},  width_limit = 30 , dirn = 
         if level_ptr > 0:
             master_str = ""
             for i in range (len( str_block )):
-                master_str = pre_pad(master_str, str_block[i], horizontal= False, pad_plus = True, dirn = dirn)
+                master_str = pad_join_2Dstr(master_str, str_block[i], horizontal= False, pad_plus = True, dirn = dirn)
                 # master_str = join_2Dstr(A, B, horizontal= False)
             master_str = add_tape (  master_str , dirn )
         else:
@@ -226,7 +226,7 @@ def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn 
             new_str_ln = func_list[0] ( func_list[1] ,func_list[2]  , dirn_arg)
 
         str_iter = str_block [level_ptr]
-        str_result = pre_pad(str_iter, new_str_ln, horizontal= False, pad_plus =True, dirn = dirn)
+        str_result = pad_join_2Dstr(str_iter, new_str_ln, horizontal= False, pad_plus =True, dirn = dirn)
         # str_result = join_2Dstr(A, B, horizontal= False)
         str_block [level_ptr] = str_result
         if shape ( str_result ) [0] > height_limit:
@@ -240,7 +240,7 @@ def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn 
         if level_ptr > 0:
             master_str = ""
             for i in range (len( str_block )):
-                master_str = pre_pad(master_str, str_block[i], horizontal= True, pad_plus =True)
+                master_str = pad_join_2Dstr(master_str, str_block[i], horizontal= True, pad_plus =True)
                 # master_str = join_2Dstr(A, B, horizontal= True)
             master_str = add_tape (  master_str , 'n' )
         else:
