@@ -334,11 +334,7 @@ def build_lines( inp_string_array , debug_flag = False):
     return pad_ar5
 
 
-opp_dir = lambda x: 'e' if x == 'w' else 'w'
-swap_dir = lambda x: False if x == 'w' else True
-idx_dir = lambda x: 0 if x == 'w' else -1
 
-idx_dir_2 = lambda x: 1 if x == 'w' else -2
 
 def insert_blank_row (string):
     string.insert(0, ' '*len(string[0]))

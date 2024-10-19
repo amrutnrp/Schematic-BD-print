@@ -11,7 +11,7 @@ s= os.listdir('data')
 cwd = os.path.dirname(__file__)
 paths = [ os.path.join ( cwd, 'data', i) for i in s ]
 ls = range(len(paths))
-ls= [9]
+ls= [7]
 LR_expansion = True
 
 
@@ -117,7 +117,8 @@ for i in ls :
 
     if ( len(_root_net) == 0 and LR_expansion == True) or LR_expansion == False: #single net
         net = nodes [ root_idx ]
-        x= plotter.ABC(net, dirn= 'w', retain_glue= debug_flag)
+        plotter.set_expansion_direction('w')
+        x= plotter.ABC(net, retain_glue= debug_flag)
         S3 = build_lines (x, False)
     else:
         net_pval = [ tok2_pval[i] for i in  _root_net]
@@ -136,10 +137,12 @@ for i in ls :
         right_wing = [ i for i in _root_net if i not in  left_wing ]
 
         net = nodes [ root_idx ]
-        S1 = plotter.ABC(net, dirn='e', adjacent_override = right_wing,retain_glue= debug_flag , netName_override = '─')
+        plotter.set_expansion_direction('e')
+        S1 = plotter.ABC(net, adjacent_override = right_wing,retain_glue= debug_flag , netName_override = '─')
         # _donenet =  get_donenet()
         # set_donenet(_donenet)
-        S2 = plotter.ABC(net, dirn='w', adjacent_override = left_wing+_root_other ,retain_glue= debug_flag )
+        plotter.set_expansion_direction('w')
+        S2 = plotter.ABC(net, adjacent_override = left_wing+_root_other ,retain_glue= debug_flag )
         # S11 = build_lines (S1, )
         # S22 = build_lines (S2, )
 
@@ -154,26 +157,6 @@ for i in ls :
     # h= input('press enter to continue')
 
 
-
-
-
-
-# dirn = 'w'
-
-#
-
-# store_variables( adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_edges)
-
-# net = nodes [ root_idx ]
-# x= ABC(net, dirn)
-# # x= ABC('18N')
-# # view_str(x)
-
-
-# s = build_lines (x, True)
-# s =
-
-# make_web_page_nOpen (S10)
 
 
 
