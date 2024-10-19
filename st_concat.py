@@ -32,7 +32,12 @@ class SCH_plotter:
 #==============================================================================#==============================================================================
 
 
-    def ABC(self, net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False, netName_override = ''):
+    def ABC(self, net, dirn = 'w', res = '', adjacent_override = None, retain_glue = False, netName_override = ''):
+        """
+        retain_glue -> keeps glue character intact for debug
+        
+        
+        """
 
         net2= self.rev_LUT [ net ] if netName_override == '' else netName_override
 
@@ -238,13 +243,13 @@ class SCH_plotter:
             C5 = pre_pad(C4, net_block_master_str, horizontal= True, pad_plus =True, dirn= dirn, swap = swap)
         else:
             C5 = C4
-        C6 = build_lines (C5, debug_arg)
+        C6 = build_lines (C5, retain_glue)
 
 
     #==============================================================================#==============================================================================
     #==============================================================================#==============================================================================
     #==============================================================================#==============================================================================
-        if debug_arg:
+        if retain_glue:
             return C5
         else:
             return C6
