@@ -5,7 +5,7 @@ Created on Wed Oct  2 12:01:16 2024
 @author: amrutnp
 """
 
-import numpy as np
+# import numpy as np
 
 glue_string = "@"
 
@@ -15,8 +15,8 @@ def str_2D(string, option = 1):
     """
     1 -> list of strings
     2 -> single string with \\n ; good for viewing
-    3 -> numpy arrary string
-    4 -> single string without \\n
+    # 3 -> numpy arrary string --> removed from usage
+    4 -> single string without \\n --> now default, if option is not provided
     """
     if option == 1:
         if type(string) == str :
@@ -39,10 +39,11 @@ def str_2D(string, option = 1):
         else:  # type(string) == list
             str3 = ''.join(string)
             L = len(string[0])
+        return str3
         # if option == 4: return str3
-        arr1= np.array(list(str3))
-        arr1.resize(  int(len(str3) / L ), L)
-        return arr1
+        # arr1= np.array(list(str3))
+        # arr1.resize(  int(len(str3) / L ), L)
+        # return arr1
 
 def pre_pad(str1, str2, horizontal = True, pad_plus = True, dirn = 'w', swap = False):
     """
