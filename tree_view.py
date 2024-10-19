@@ -26,6 +26,7 @@ class SCH_processor():
         self.adj_list_data = []
         self.file_process_flag = False
         self.progress_counter = -1
+        self.pre_process_flag = False
 
         self.LR_expansion = True
 
@@ -53,14 +54,15 @@ class SCH_processor():
             globals()[name] = value
 
     def get_view (self):
+        if self.pre_process_flag == False:
+            print ('Pre processing not been done, can\'t proceed furthur')
+            return []
         return self.S5
 
-    def start_processing(self):
+    def pre_process(self):
         if self.file_process_flag == False:
             print ('File has not been read, no data present')
             return
-        _ = self
-
         self.token_adj, self.rev_LUT, self.rev_LUT_int = tokenizer_nl_str(self.adj_list_data)
         self.nextstep()
 
@@ -135,6 +137,13 @@ class SCH_processor():
 
         del boxed_series_items, component_box, missing_keys, bond_temp
         del value, key, item,idx, i
+
+        self.pre_process_flag = True
+    def process_nPlot(self):
+        if self.pre_process_flag == False:
+            print ('Pre processing not been done, can\'t proceed furthur')
+            return -1
+        _ = self
         if max( _.level_depth_trf) > 4:
             _.LR_expansion = False
         else:
@@ -201,7 +210,8 @@ class SCH_processor():
 for i in ls :
     obj = SCH_processor()
     obj.process_file( paths[i] )
-    obj.start_processing()
+    obj.pre_process()
+    obj.process_nPlot()
     S= obj.get_view()
     make_web_page_nOpen (S, openFlag = True)
     obj.make_globals()
