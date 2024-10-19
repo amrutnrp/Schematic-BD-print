@@ -51,11 +51,11 @@ class SCH_plotter:
 
         #=================  discover nodes in graph ===============================   1
         if adjacent_override == None:
-            exclude_list = done_nets
+            exclude_list = self.done_nets
         else:
             exclude_list = adjacent_override
-        for adj_idx, bond_i in zip ( adjNodes_index [node_idx],  bond_type_list[node_idx]   ):
-            if nodes[adj_idx] in exclude_list:  # discard already rendered nets
+        for adj_idx, bond_i in zip ( self.adjNodes_index [node_idx],  self.bond_type_list[node_idx]   ):
+            if self.nodes[adj_idx] in exclude_list:  # discard already rendered nets
                 continue
             adjIdx_bondName_local.append ( [adj_idx, bond_i ])
 
@@ -66,16 +66,16 @@ class SCH_plotter:
             elif bond_i == 'G':
                 cmp_gnd .append (adj_idx)
             elif bond_i == 'B':
-                net_res.append ( [ nodes [adj_idx], RES[nodes [adj_idx]] [ net]  ])
+                net_res.append ( [ self.nodes [adj_idx], self.RES[self.nodes [adj_idx]] [ net]  ])
             else:
-                print ( 'unsolved', nodes [adj_idx], bond_i)
-        done_nets .append (net)
+                print ( 'unsolved', self.nodes [adj_idx], bond_i)
+        self.done_nets .append (net)
         #=====================   make the net part, add resistor if it's present  =  3
 
         source= net_block.format (net2)
         source = str_2D(source, 1)
         if res!='':
-            res_b = tok_2_block[res ]
+            res_b = self.tok_2_block[res ]
             res_b = str_2D(res_b, 1)
             # print ("--", res_b)
             if res_b[0][idx_dir2] == ' ':                  # 3 line resistor, but 1 line net
@@ -86,16 +86,16 @@ class SCH_plotter:
         #====================================  render the children ================   4
 
 
-        cmp_gnd = [ nodes [i] for i in cmp_gnd ]
-        cmp_open = [ nodes [i] for i in cmp_open ]
+        cmp_gnd = [ self.nodes [i] for i in cmp_gnd ]
+        cmp_open = [ self.nodes [i] for i in cmp_open ]
 
         L1, L2, L3 = len(cmp_gnd), len(cmp_open), len(net_res)
 
         if L1 != 0:
-            C1= make_cap_block( cmp_gnd, tok_2_block ,30,dirn)
+            C1= make_cap_block( cmp_gnd, self.tok_2_block ,30,dirn)
 
         if L2 != 0:
-            C2= make_comp_block ( cmp_open, tok_2_block, 15, dirn)
+            C2= make_comp_block ( cmp_open, self.tok_2_block, 15, dirn)
             if L3 != 0:
                 C2 = add_tape (  C2 , 'n' )                                        #
             else:
@@ -116,7 +116,7 @@ class SCH_plotter:
         if L3 != 0:
             for item in net_res:
                 net_i , res_i = item
-                bloc = ABC( net_i, dirn, res_i)
+                bloc = self.ABC( net_i, dirn, res_i)
                 net_blocks.append (bloc)
 
             net_block_master_str = ''
@@ -141,7 +141,7 @@ class SCH_plotter:
             C4 = pre_pad(source, C1, horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
         elif L1 ==0 and L2==1 and L3 != 0:                                         #[1, few, many],1,0
             cmp_0 = cmp_open[0]
-            cmp_0_name  = rev_LUT[cmp_0]
+            cmp_0_name  = self.rev_LUT[cmp_0]
             single_comp=  box_comp_open_v3_top(cmp_0_name)
             #pad twice if source has resistor, or pad once
             single_comp= str_2D(single_comp, 1)
@@ -154,7 +154,7 @@ class SCH_plotter:
         elif L1 ==1 and L2==1 and L3 != 0:                                         #x,1,1
             # both component and cap must be hanging
             cmp_0 = cmp_open[0]
-            cmp_0_name  = rev_LUT[cmp_0]
+            cmp_0_name  = self.rev_LUT[cmp_0]
             single_comp=  box_comp_open_v3_top(cmp_0_name)
             single_comp= str_2D(single_comp, 1)
             single_comp = add_tape( single_comp, 'n')
