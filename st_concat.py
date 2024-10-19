@@ -148,6 +148,24 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
         del cmp_0, cmp_0_name,single_comp
     elif L1 ==0:                                                               #x,[few, many],0
         C4 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+    elif L1 ==1 and L2==1 and L3 != 0:                                         #x,1,1
+        # both component and cap must be hanging
+        cmp_0 = cmp_open[0]
+        cmp_0_name  = rev_LUT[cmp_0]
+        single_comp=  box_comp_open_v3_top(cmp_0_name)
+        single_comp= str_2D(single_comp, 1)
+        single_comp = add_tape( single_comp, 'n')
+        C3 = pre_pad(C1, single_comp , horizontal= True, pad_plus =True, dirn = opp_dir(dirn), swap= swap)
+        C4 = pre_pad(source, C3 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+        # add hook
+        l_c4 = len(C4[0])
+        C4[0][l_c4 >> 1] = '┴'
+        del cmp_0, cmp_0_name,single_comp
+    elif L1 ==1:                                                               #x,x,1
+        if m_lvl_src == True :
+            insert_blank_row( C1 )
+        C3 = pre_pad(source, C1 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+        C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
     else:
         w1 = len(source[0]); w2 = len(C2[0]) ; w3 = len(C1[0])    # get width of cap, net, and components
         w4 = w3 >> 1
