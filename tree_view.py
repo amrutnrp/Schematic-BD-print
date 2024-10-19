@@ -118,7 +118,7 @@ for i in ls :
     if ( len(_root_net) == 0 and LR_expansion == True) or LR_expansion == False: #single net
         net = nodes [ root_idx ]
         plotter.set_expansion_direction('w')
-        x= plotter.ABC(net, retain_glue= debug_flag)
+        x= plotter.SCH_plot(net, retain_glue= debug_flag)
         S3 = build_lines (x, False)
     else:
         net_pval = [ tok2_pval[i] for i in  _root_net]
@@ -138,11 +138,11 @@ for i in ls :
 
         net = nodes [ root_idx ]
         plotter.set_expansion_direction('e')
-        S1 = plotter.ABC(net, adjacent_override = right_wing,retain_glue= debug_flag , netName_override = '─')
+        S1 = plotter.SCH_plot(net, adjacent_override = right_wing,retain_glue= debug_flag , netName_override = '─')
         # _donenet =  get_donenet()
         # set_donenet(_donenet)
         plotter.set_expansion_direction('w')
-        S2 = plotter.ABC(net, adjacent_override = left_wing+_root_other ,retain_glue= debug_flag )
+        S2 = plotter.SCH_plot(net, adjacent_override = left_wing+_root_other ,retain_glue= debug_flag )
         # S11 = build_lines (S1, )
         # S22 = build_lines (S2, )
 

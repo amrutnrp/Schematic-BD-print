@@ -87,7 +87,7 @@ class SCH_plotter:
 #==============================================================================#==============================================================================
 
 
-    def ABC(self, net, res = '', adjacent_override = None, retain_glue = False, netName_override = ''):
+    def SCH_plot(self, net, res = '', adjacent_override = None, retain_glue = False, netName_override = ''):
         """
         retain_glue -> keeps glue character intact for debug
 
@@ -173,7 +173,7 @@ class SCH_plotter:
         if L3 != 0:
             for item in net_res:
                 net_i , res_i = item
-                bloc = self.ABC( net_i, res_i)
+                bloc = self.SCH_plot( net_i, res_i)
                 net_blocks.append (bloc)
 
             net_block_master_str = ''
