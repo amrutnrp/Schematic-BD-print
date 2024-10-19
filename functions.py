@@ -54,7 +54,39 @@ def str_2D(string, option = 1):
         arr1.resize(  int(len(str3) / L ), L)
         return arr1
 
-def pre_pad(str1, str2, horizontal = True, pad_plus = False, dirn = 'w', swap = False):
+def pre_pad(str1, str2, horizontal = True, pad_plus = True, dirn = 'w', swap = False):
+    """
+    Parameters
+    ----------
+    str1 : string/list
+        string1 , 2D or single line
+    str2 : string/list
+        string2 , 2D or single line
+    horizontal : bool, optional
+        True:join blocks horizontally, False: Join blocks vertically . The default is True.
+    pad_plus : TYPE, optional
+        True: returns joined array, False: returns two arrays with modified width. The default is True.
+    dirn : TYPE, optional
+        required if horizontal==False.
+        'w'= adds padding to the left side : parent side
+        False = to the right side
+        The default is 'w'.
+    swap : TYPE, optional
+        required if horizontal==True.
+        True = swap the order  of joining
+        False = don't
+        The default is False.
+
+    Returns
+    -------
+    list/tuple
+        if pad_plus == True
+        returns joined string
+
+        else
+        returns two strings that can be joined later
+
+    """
     A = str_2D (str1, 1)
     B = str_2D (str2, 1)
     if swap == True: A, B= B, A
