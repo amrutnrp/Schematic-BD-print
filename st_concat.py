@@ -124,10 +124,10 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
 
             net_block_master_str = master_str
 
-
     #===================================   join the children to source net ====
 
-
+    # if L1 ==0 and L2 ==1  and L3 == 0:
+    #     view_str(C2)
 
     if   L1==0 and L2 ==0:                                                     #x,0,0
         C4 = source
@@ -149,32 +149,29 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
     elif L1 ==0:                                                               #x,[few, many],0
         C4 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
     else:
-        w1 = len(source[0]); w2 = len(C2[0]) ; w3 = len(C1[0])
+        w1 = len(source[0]); w2 = len(C2[0]) ; w3 = len(C1[0])    # get width of cap, net, and components
         w4 = w3 >> 1
-        # make net source and capacitor list almost equal size
-        if w3> w1:                                                             #
+        # make net / source block almost equal size to cap block
+        if w3> w1:
             ext_idx = idx_dir(opp_dir(dirn))  # take a bite from source and replicate it
             if not swap: # dirn == 'w':
                 source =[ i+i[ext_idx]*(w3-w1) for i in source ]
             else:
                 source =[ i[ext_idx]*(w3-w1)+ i for i in source ]
 
+
         if L2==1:                                                              #x, 1, x
-
-            # C3 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)  ###
-            # C4 = pre_pad(C3, C1 , horizontal= True, pad_plus =True, dirn = dirn)
-
-
             if L1 == 1 and L3 == 0:                                            # 0, 1,1
-                #remove glue from top in case of single cap and single component
-                # but if child net present, then keep it
+                # in case of single cap and single component  , remove top glue from cap block
+                # but if child net present, then don't do it, it won't look asthetic
                 C1 = C1[1:]
 
+            # change cap block size appropriately
             cap_overflow= False
             if w3 < w1+w2 and w4<w1 and w4<w2:
                 left_pad = w1-w4
                 right_pad = w2-w4
-                latch_direction = dirn  # doesn't matter
+                latch_direction = dirn  # doesn't matter, variable won't be used
             elif w3 < w1+w2 and w4 > w2 and w4 < w1:
                 left_pad = w1+w2 - w3
                 right_pad = 0
@@ -198,22 +195,20 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
                 C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
                 C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
         else:  # many caps and many components.
-
             C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
             C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
 
 
     if L3 != 0:
+        # make net or source block equal height before joining
         m_lvl_child = not( C4 [0][idx_dir2] == ' ')
-        # idx_2 = 1 if dirn =='w' else -2
         m_lvl_parent =  net_block_master_str [0][idx_dir3] == ' '
         if m_lvl_child ==True and m_lvl_parent == False:
             insert_blank_row( C4 )
-
-            # net_block_master_str [0]
         elif m_lvl_child ==False and m_lvl_parent == True:
             insert_blank_row( net_block_master_str )
         del m_lvl_child, m_lvl_parent
+        #add a mandatory glue in parent direction
         net_block_master_str = add_tape (  net_block_master_str , dirn )
 
         C5 = pre_pad(C4, net_block_master_str, horizontal= True, pad_plus =True, dirn= dirn, swap = swap)
