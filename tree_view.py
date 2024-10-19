@@ -9,10 +9,10 @@ import os, re
 
 s= os.listdir('data')
 cwd = os.path.dirname(__file__)
-paths = [ os.path.join ( cwd, 'light', i) for i in s ]
+paths = [ os.path.join ( cwd, 'data', i) for i in s ]
 ls = range(len(paths))
-ls= [0]
-LR_expansion = False
+ls= [9]
+LR_expansion = True
 
 
 from functions import *
