@@ -49,203 +49,203 @@ class SCH_plotter:
         net_res = []
         net_blocks = []
 
-    #=================  discover nodes in graph ===============================   1
-    if adjacent_override == None:
-        exclude_list = done_nets
-    else:
-        exclude_list = adjacent_override
-    for adj_idx, bond_i in zip ( adjNodes_index [node_idx],  bond_type_list[node_idx]   ):
-        if nodes[adj_idx] in exclude_list:  # discard already rendered nets
-            continue
-        adjIdx_bondName_local.append ( [adj_idx, bond_i ])
-
-    #=================  discover elements : component, caps and net branches ==   2
-    for adj_idx, bond_i in adjIdx_bondName_local:
-        if bond_i == 'O' or  bond_i == 'P':
-            cmp_open.append (adj_idx)
-        elif bond_i == 'G':
-            cmp_gnd .append (adj_idx)
-        elif bond_i == 'B':
-            net_res.append ( [ nodes [adj_idx], RES[nodes [adj_idx]] [ net]  ])
+        #=================  discover nodes in graph ===============================   1
+        if adjacent_override == None:
+            exclude_list = done_nets
         else:
-            print ( 'unsolved', nodes [adj_idx], bond_i)
-    done_nets .append (net)
-    #=====================   make the net part, add resistor if it's present  =  3
+            exclude_list = adjacent_override
+        for adj_idx, bond_i in zip ( adjNodes_index [node_idx],  bond_type_list[node_idx]   ):
+            if nodes[adj_idx] in exclude_list:  # discard already rendered nets
+                continue
+            adjIdx_bondName_local.append ( [adj_idx, bond_i ])
 
-    source= net_block.format (net2)
-    source = str_2D(source, 1)
-    if res!='':
-        res_b = tok_2_block[res ]
-        res_b = str_2D(res_b, 1)
-        # print ("--", res_b)
-        if res_b[0][idx_dir2] == ' ':                  # 3 line resistor, but 1 line net
-            # source.insert(0, ' '*len(source[0]))
-            insert_blank_row(source)
-        source = pre_pad(res_b, source, horizontal = True, pad_plus =True, dirn=dirn, swap= swap)
+        #=================  discover elements : component, caps and net branches ==   2
+        for adj_idx, bond_i in adjIdx_bondName_local:
+            if bond_i == 'O' or  bond_i == 'P':
+                cmp_open.append (adj_idx)
+            elif bond_i == 'G':
+                cmp_gnd .append (adj_idx)
+            elif bond_i == 'B':
+                net_res.append ( [ nodes [adj_idx], RES[nodes [adj_idx]] [ net]  ])
+            else:
+                print ( 'unsolved', nodes [adj_idx], bond_i)
+        done_nets .append (net)
+        #=====================   make the net part, add resistor if it's present  =  3
 
-    #====================================  render the children ================   4
+        source= net_block.format (net2)
+        source = str_2D(source, 1)
+        if res!='':
+            res_b = tok_2_block[res ]
+            res_b = str_2D(res_b, 1)
+            # print ("--", res_b)
+            if res_b[0][idx_dir2] == ' ':                  # 3 line resistor, but 1 line net
+                # source.insert(0, ' '*len(source[0]))
+                insert_blank_row(source)
+            source = pre_pad(res_b, source, horizontal = True, pad_plus =True, dirn=dirn, swap= swap)
+
+        #====================================  render the children ================   4
 
 
-    cmp_gnd = [ nodes [i] for i in cmp_gnd ]
-    cmp_open = [ nodes [i] for i in cmp_open ]
+        cmp_gnd = [ nodes [i] for i in cmp_gnd ]
+        cmp_open = [ nodes [i] for i in cmp_open ]
 
-    L1, L2, L3 = len(cmp_gnd), len(cmp_open), len(net_res)
+        L1, L2, L3 = len(cmp_gnd), len(cmp_open), len(net_res)
 
-    if L1 != 0:
-        C1= make_cap_block( cmp_gnd, tok_2_block ,30,dirn)
+        if L1 != 0:
+            C1= make_cap_block( cmp_gnd, tok_2_block ,30,dirn)
 
-    if L2 != 0:
-        C2= make_comp_block ( cmp_open, tok_2_block, 15, dirn)
+        if L2 != 0:
+            C2= make_comp_block ( cmp_open, tok_2_block, 15, dirn)
+            if L3 != 0:
+                C2 = add_tape (  C2 , 'n' )                                        #
+            else:
+                pass                                                               # 0,[1, few, many], x
+
+            #===================================   Lift source vs Component ====
+            m_lvl_src = source [0][idx_dir2] == ' '
+            # idx_2 = 1 if dirn =='w' else -2
+            m_lvl_cmp = not( C2[0][idx_dir3] == '─'  or C2[0][idx_dir3] == glue_string  )
+
+            if m_lvl_src ==True and m_lvl_cmp == False:
+                insert_blank_row( C2 )
+            elif m_lvl_src ==False and m_lvl_cmp == True:
+                insert_blank_row( source )
+
+            del m_lvl_cmp  # m_lvl_src used later
+
         if L3 != 0:
-            C2 = add_tape (  C2 , 'n' )                                        #
-        else:
-            pass                                                               # 0,[1, few, many], x
+            for item in net_res:
+                net_i , res_i = item
+                bloc = ABC( net_i, dirn, res_i)
+                net_blocks.append (bloc)
 
-        #===================================   Lift source vs Component ====
-        m_lvl_src = source [0][idx_dir2] == ' '
-        # idx_2 = 1 if dirn =='w' else -2
-        m_lvl_cmp = not( C2[0][idx_dir3] == '─'  or C2[0][idx_dir3] == glue_string  )
+            net_block_master_str = ''
+            if len(net_blocks) > 0:
+                master_str = ''
+                for bloc in net_blocks:
+                    master_str = pre_pad(master_str, bloc, horizontal= False, pad_plus =True, dirn=dirn)
 
-        if m_lvl_src ==True and m_lvl_cmp == False:
-            insert_blank_row( C2 )
-        elif m_lvl_src ==False and m_lvl_cmp == True:
-            insert_blank_row( source )
+                net_block_master_str = master_str
 
-        del m_lvl_cmp  # m_lvl_src used later
+        #===================================   join the children to source net ====
 
-    if L3 != 0:
-        for item in net_res:
-            net_i , res_i = item
-            bloc = ABC( net_i, dirn, res_i)
-            net_blocks.append (bloc)
+        # if L1 ==0 and L2 ==1  and L3 == 0:
+        #     view_str(C2)
 
-        net_block_master_str = ''
-        if len(net_blocks) > 0:
-            master_str = ''
-            for bloc in net_blocks:
-                master_str = pre_pad(master_str, bloc, horizontal= False, pad_plus =True, dirn=dirn)
-
-            net_block_master_str = master_str
-
-    #===================================   join the children to source net ====
-
-    # if L1 ==0 and L2 ==1  and L3 == 0:
-    #     view_str(C2)
-
-    if   L1==0 and L2 ==0:                                                     #x,0,0
-        C4 = source
-    elif L1 !=0 and L2 ==0:                                                    #x,0,[1, few, many ]
-        if source [0][idx_dir2] == ' ':
-            # C1.insert(0, ' '*len(C1[0]))
-            insert_blank_row(C1)
-        C4 = pre_pad(source, C1, horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-    elif L1 ==0 and L2==1 and L3 != 0:                                         #[1, few, many],1,0
-        cmp_0 = cmp_open[0]
-        cmp_0_name  = rev_LUT[cmp_0]
-        single_comp=  box_comp_open_v3_top(cmp_0_name)
-        #pad twice if source has resistor, or pad once
-        single_comp= str_2D(single_comp, 1)
-        single_comp = add_tape( single_comp, 'n')
-        if m_lvl_src ==True: insert_blank_row( single_comp )
-        C4 = pre_pad(source, single_comp , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-        del cmp_0, cmp_0_name,single_comp
-    elif L1 ==0:                                                               #x,[few, many],0
-        C4 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-    elif L1 ==1 and L2==1 and L3 != 0:                                         #x,1,1
-        # both component and cap must be hanging
-        cmp_0 = cmp_open[0]
-        cmp_0_name  = rev_LUT[cmp_0]
-        single_comp=  box_comp_open_v3_top(cmp_0_name)
-        single_comp= str_2D(single_comp, 1)
-        single_comp = add_tape( single_comp, 'n')
-        C3 = pre_pad(C1, single_comp , horizontal= True, pad_plus =True, dirn = opp_dir(dirn), swap= swap)
-        C4 = pre_pad(source, C3 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-        # add hook
-        l_c4 = len(C4[0])
-        C4[0][l_c4 >> 1] = '┴'
-        del cmp_0, cmp_0_name,single_comp
-    elif L1 ==1:                                                               #x,x,1
-        if m_lvl_src == True :
-            insert_blank_row( C1 )
-        C3 = pre_pad(source, C1 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-        C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-    else:
-        w1 = len(source[0]); w2 = len(C2[0]) ; w3 = len(C1[0])    # get width of cap, net, and components
-        w4 = w3 >> 1
-        # make net / source block almost equal size to cap block
-        if w3> w1:
-            ext_idx = idx_dir(opp_dir(dirn))  # take a bite from source and replicate it
-            if not swap: # dirn == 'w':
-                source =[ i+i[ext_idx]*(w3-w1) for i in source ]
-            else:
-                source =[ i[ext_idx]*(w3-w1)+ i for i in source ]
-
-
-        if L2==1:                                                              #x, 1, x
-            if L1 == 1 and L3 == 0:                                            # 0, 1,1
-                # in case of single cap and single component  , remove top glue from cap block
-                # but if child net present, then don't do it, it won't look asthetic
-                C1 = C1[1:]
-
-            # change cap block size appropriately
-            cap_overflow= False
-            if w3 < w1+w2 and w4<w1 and w4<w2:
-                left_pad = w1-w4
-                right_pad = w2-w4
-                latch_direction = dirn  # doesn't matter, variable won't be used
-            elif w3 < w1+w2 and w4 > w2 and w4 < w1:
-                left_pad = w1+w2 - w3
-                right_pad = 0
-                # add good padding to net block
-                latch_direction = opp_dir ( dirn )
-            elif w3 < w1+w2 and w4 < w2 and w4 > w1:
-                left_pad = 0
-                right_pad = w1+w2-w3
-                latch_direction = dirn
-            else:               # capacitor too big for single component, let it have the space
-                cap_overflow = True
-                latch_direction = opp_dir ( dirn )   # why ???
-            #============================================
-            # can i use swap and latch_direction as a single indicaor of dirn ???
-            if cap_overflow== False:
-                if swap:
-                    left_pad, right_pad = right_pad, left_pad
-                C1= insert_blank_col_get(C1, 'w', left_pad)
-                C1= insert_blank_col_get(C1, 'e', right_pad)
-
-                C3 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = latch_direction, swap= swap)  ###
-                C4 = pre_pad(C3, C1 , horizontal= False, pad_plus =True, dirn = dirn)
-            else:
-                C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn =  latch_direction )
-                C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
-        else:  # many caps and many components.
-            C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
+        if   L1==0 and L2 ==0:                                                     #x,0,0
+            C4 = source
+        elif L1 !=0 and L2 ==0:                                                    #x,0,[1, few, many ]
+            if source [0][idx_dir2] == ' ':
+                # C1.insert(0, ' '*len(C1[0]))
+                insert_blank_row(C1)
+            C4 = pre_pad(source, C1, horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+        elif L1 ==0 and L2==1 and L3 != 0:                                         #[1, few, many],1,0
+            cmp_0 = cmp_open[0]
+            cmp_0_name  = rev_LUT[cmp_0]
+            single_comp=  box_comp_open_v3_top(cmp_0_name)
+            #pad twice if source has resistor, or pad once
+            single_comp= str_2D(single_comp, 1)
+            single_comp = add_tape( single_comp, 'n')
+            if m_lvl_src ==True: insert_blank_row( single_comp )
+            C4 = pre_pad(source, single_comp , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+            del cmp_0, cmp_0_name,single_comp
+        elif L1 ==0:                                                               #x,[few, many],0
+            C4 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+        elif L1 ==1 and L2==1 and L3 != 0:                                         #x,1,1
+            # both component and cap must be hanging
+            cmp_0 = cmp_open[0]
+            cmp_0_name  = rev_LUT[cmp_0]
+            single_comp=  box_comp_open_v3_top(cmp_0_name)
+            single_comp= str_2D(single_comp, 1)
+            single_comp = add_tape( single_comp, 'n')
+            C3 = pre_pad(C1, single_comp , horizontal= True, pad_plus =True, dirn = opp_dir(dirn), swap= swap)
+            C4 = pre_pad(source, C3 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+            # add hook
+            l_c4 = len(C4[0])
+            C4[0][l_c4 >> 1] = '┴'
+            del cmp_0, cmp_0_name,single_comp
+        elif L1 ==1:                                                               #x,x,1
+            if m_lvl_src == True :
+                insert_blank_row( C1 )
+            C3 = pre_pad(source, C1 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
             C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+        else:
+            w1 = len(source[0]); w2 = len(C2[0]) ; w3 = len(C1[0])    # get width of cap, net, and components
+            w4 = w3 >> 1
+            # make net / source block almost equal size to cap block
+            if w3> w1:
+                ext_idx = idx_dir(opp_dir(dirn))  # take a bite from source and replicate it
+                if not swap: # dirn == 'w':
+                    source =[ i+i[ext_idx]*(w3-w1) for i in source ]
+                else:
+                    source =[ i[ext_idx]*(w3-w1)+ i for i in source ]
 
 
-    if L3 != 0:
-        # make net or source block equal height before joining
-        m_lvl_child = not( C4 [0][idx_dir2] == ' ')
-        m_lvl_parent =  net_block_master_str [0][idx_dir3] == ' '
-        if m_lvl_child ==True and m_lvl_parent == False:
-            insert_blank_row( C4 )
-        elif m_lvl_child ==False and m_lvl_parent == True:
-            insert_blank_row( net_block_master_str )
-        del m_lvl_child, m_lvl_parent
-        #add a mandatory glue in parent direction
-        net_block_master_str = add_tape (  net_block_master_str , dirn )
+            if L2==1:                                                              #x, 1, x
+                if L1 == 1 and L3 == 0:                                            # 0, 1,1
+                    # in case of single cap and single component  , remove top glue from cap block
+                    # but if child net present, then don't do it, it won't look asthetic
+                    C1 = C1[1:]
 
-        C5 = pre_pad(C4, net_block_master_str, horizontal= True, pad_plus =True, dirn= dirn, swap = swap)
-    else:
-        C5 = C4
-    C6 = build_lines (C5, debug_arg)
+                # change cap block size appropriately
+                cap_overflow= False
+                if w3 < w1+w2 and w4<w1 and w4<w2:
+                    left_pad = w1-w4
+                    right_pad = w2-w4
+                    latch_direction = dirn  # doesn't matter, variable won't be used
+                elif w3 < w1+w2 and w4 > w2 and w4 < w1:
+                    left_pad = w1+w2 - w3
+                    right_pad = 0
+                    # add good padding to net block
+                    latch_direction = opp_dir ( dirn )
+                elif w3 < w1+w2 and w4 < w2 and w4 > w1:
+                    left_pad = 0
+                    right_pad = w1+w2-w3
+                    latch_direction = dirn
+                else:               # capacitor too big for single component, let it have the space
+                    cap_overflow = True
+                    latch_direction = opp_dir ( dirn )   # why ???
+                #============================================
+                # can i use swap and latch_direction as a single indicaor of dirn ???
+                if cap_overflow== False:
+                    if swap:
+                        left_pad, right_pad = right_pad, left_pad
+                    C1= insert_blank_col_get(C1, 'w', left_pad)
+                    C1= insert_blank_col_get(C1, 'e', right_pad)
+
+                    C3 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = latch_direction, swap= swap)  ###
+                    C4 = pre_pad(C3, C1 , horizontal= False, pad_plus =True, dirn = dirn)
+                else:
+                    C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn =  latch_direction )
+                    C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
+            else:  # many caps and many components.
+                C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
+                C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
 
 
-#==============================================================================#==============================================================================
-#==============================================================================#==============================================================================
-#==============================================================================#==============================================================================
-    if debug_arg:
-        return C5
-    else:
-        return C6
+        if L3 != 0:
+            # make net or source block equal height before joining
+            m_lvl_child = not( C4 [0][idx_dir2] == ' ')
+            m_lvl_parent =  net_block_master_str [0][idx_dir3] == ' '
+            if m_lvl_child ==True and m_lvl_parent == False:
+                insert_blank_row( C4 )
+            elif m_lvl_child ==False and m_lvl_parent == True:
+                insert_blank_row( net_block_master_str )
+            del m_lvl_child, m_lvl_parent
+            #add a mandatory glue in parent direction
+            net_block_master_str = add_tape (  net_block_master_str , dirn )
+
+            C5 = pre_pad(C4, net_block_master_str, horizontal= True, pad_plus =True, dirn= dirn, swap = swap)
+        else:
+            C5 = C4
+        C6 = build_lines (C5, debug_arg)
+
+
+    #==============================================================================#==============================================================================
+    #==============================================================================#==============================================================================
+    #==============================================================================#==============================================================================
+        if debug_arg:
+            return C5
+        else:
+            return C6
 
