@@ -17,7 +17,12 @@ def store_variables (_1, _2, _3, _4, _5, _6, _7):
     global adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block, broken_bonds
     adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_bonds= _1, _2, _3, _4, _5, _6, _7
 
+def set_donenet (inp):
+    global done_nets
+    done_nets = inp
 
+def get_donenet():
+    return done_nets
 
 #==============================================================================#==============================================================================
 #==============================================================================#==============================================================================
@@ -25,8 +30,6 @@ def store_variables (_1, _2, _3, _4, _5, _6, _7):
 
 
 def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False, netName_override = ''):
-    global done_nets
-    if res == '': done_nets = []
 
     net2= rev_LUT [ net ] if netName_override == '' else netName_override
 

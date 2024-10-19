@@ -17,7 +17,7 @@ LR_expansion = True
 
 from functions import *
 from __init__ import *
-from st_concat import store_variables, ABC
+from st_concat import store_variables, ABC, set_donenet, get_donenet
 
 for i in ls :
     adj_list_data = []
@@ -111,6 +111,7 @@ for i in ls :
     _root_net= [ i  for i in adj_nodes[root_idx] if i.endswith('N') ]
     _root_other =[ i  for i in adj_nodes[root_idx] if not i.endswith('N') ]
     store_variables( adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_edges)
+    set_donenet([])
 
     if ( len(_root_net) == 0 and LR_expansion == True) or LR_expansion == False: #single net
         net = nodes [ root_idx ]
@@ -134,6 +135,8 @@ for i in ls :
 
         net = nodes [ root_idx ]
         S1 = ABC(net, dirn='e', adjacent_override = right_wing,debug_arg= debug_flag , netName_override = '─')
+        # _donenet =  get_donenet()
+        # set_donenet(_donenet)
         S2 = ABC(net, dirn='w', adjacent_override = left_wing+_root_other ,debug_arg= debug_flag )
         # S11 = build_lines (S1, )
         # S22 = build_lines (S2, )
