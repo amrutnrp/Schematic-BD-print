@@ -183,6 +183,9 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
                 latch_direction = dirn
             else:               # capacitor too big for single component, let it have the space
                 cap_overflow = True
+                latch_direction = opp_dir ( dirn )   # why ???
+            #============================================
+            # can i use swap and latch_direction as a single indicaor of dirn ???
             if cap_overflow== False:
                 if swap:
                     left_pad, right_pad = right_pad, left_pad
@@ -192,7 +195,7 @@ def ABC( net, dirn = 'w', res = '', adjacent_override = None, debug_arg = False,
                 C3 = pre_pad(source, C2 , horizontal= True, pad_plus =True, dirn = latch_direction, swap= swap)  ###
                 C4 = pre_pad(C3, C1 , horizontal= False, pad_plus =True, dirn = dirn)
             else:
-                C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
+                C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn =  latch_direction )
                 C4 = pre_pad(C3, C2 , horizontal= True, pad_plus =True, dirn = dirn, swap= swap)
         else:  # many caps and many components.
             C3 = pre_pad(source, C1 , horizontal= False, pad_plus =True, dirn = opp_dir ( dirn ))
