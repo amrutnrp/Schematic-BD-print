@@ -40,6 +40,7 @@ class SCH_processor():
             self.nxt_lim = 6
             self.nxt_end = ''
             self.nxt_list = progress_barV
+        self.debug_flag = debug_flag
 
     def nextstep(self):
         if self.progress_counter ==self.nxt_lim:
@@ -170,7 +171,7 @@ class SCH_processor():
         _._root_other =[ i  for i in _.adj_nodes[_.root_idx] if not i.endswith('N') ]
 
         plotter = SCH_plotter()
-        plotter.set_debug(debug_flag)
+        plotter.set_debug(self.debug_flag)
         plotter.set_system_data( _.adjNodes_index,
                                  _.bond_type_list,
                                  _.nodes,

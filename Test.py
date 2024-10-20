@@ -18,6 +18,7 @@ del s
 
 for i in ls :
     obj = SCH_processor()
+    obj.debug_flag = False
     obj.process_file( paths[i] )
     obj.pre_process()
     obj.process_nPlot()

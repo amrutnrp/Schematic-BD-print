@@ -180,6 +180,13 @@ class SCH_plotter:
 
             net_block_master_str = ''
             if len(net_blocks) > 0:
+                #first sort the net blocks properly
+                wh = [ (len(bloc) , len(bloc[0]) ) for bloc in net_blocks ]
+                net_blocks_zip = zip(net_blocks, wh)
+                net_sorted_zip = sorted(net_blocks_zip, key=lambda x: (x[1][1], x[1][0]), reverse=True)
+                net_blocks2, wh2 = zip(*net_sorted_zip)
+                net_blocks = net_blocks2
+
                 master_str = ''
                 for bloc in net_blocks:
                     master_str = pad_join_2Dstr(master_str, bloc,
