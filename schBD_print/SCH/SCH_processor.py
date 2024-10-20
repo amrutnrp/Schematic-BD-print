@@ -15,12 +15,13 @@ from schBD_print.SCH.string2D_functions import build_lines,str_2D, pad_join_2Dst
 from schBD_print.SCH.SCH_plotter import SCH_plotter
 
 
-# progress_bars = ['▂', '▅', '▇', '█']
-# progress_bars = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
+# progress_barV = ['▂', '▅', '▇', '█']
+progress_barV = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
 progress_barH = ['▏', '▎', '▍', '▌', '▋', '▊', '█', '▉']
 
-debug_flag = True
+debug_flag = False
 node_processing_threshold = 200
+horizontal_debug = True
 
 class SCH_processor():
     def __init__(self):
@@ -31,12 +32,22 @@ class SCH_processor():
 
         self.LR_expansion = True
 
+        if horizontal_debug == False:
+            self.nxt_lim = 7
+            self.nxt_end = '\n'
+            self.nxt_list = progress_barH
+        else:
+            self.nxt_lim = 6
+            self.nxt_end = ''
+            self.nxt_list = progress_barV
+
     def nextstep(self):
-        if self.progress_counter ==7:
+        if self.progress_counter ==self.nxt_lim:
             self.progress_counter = 0
         else:
             self.progress_counter += 1
-        print (progress_barH[ self.progress_counter ], end='\n')
+
+        print (self.nxt_list[ self.progress_counter ], end= self.nxt_end )
 
     def process_file(self, f_path):
         f= open (f_path ,'r')
@@ -90,8 +101,8 @@ class SCH_processor():
                     print ('pullup token item in token_adj has length != 4 ', item)
                     raise SystemExit()
                 pu_res, comp = item[3], item[1]
-                comp_element = rev_LUT [comp]
-                res_element = rev_LUT [pu_res]
+                comp_element = self.rev_LUT [comp]
+                res_element = self.rev_LUT [pu_res]
                 component_box[ comp ] = [ box_pullup, comp_element, res_element ]
                 del res_element, comp_element, pu_res, comp
         missing_keys = set(boxed_series_items.keys()) - set(self.series_elements_tok)
