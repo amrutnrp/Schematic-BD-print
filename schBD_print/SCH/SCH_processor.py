@@ -8,6 +8,7 @@ import re
 
 from schBD_print.Util.tokenize_strings            import tokenizer_nl_str
 from schBD_print.Util.prune_transfer_function     import prune_algo
+# from Util.string_decorators           import box_series, box_comp_open, box_comp_PD, box_pullup, validate_rect
 from schBD_print.Util.string_decorators           import box_series, box_comp_open, box_comp_PD, box_pullup, box_comp_open_v3_top
 
 from schBD_print.SCH.string2D_functions import build_lines,str_2D, pad_join_2Dstr
