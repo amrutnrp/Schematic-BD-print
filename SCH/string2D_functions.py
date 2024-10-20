@@ -9,7 +9,7 @@ Created on Wed Oct  2 12:01:16 2024
 
 glue_string = "@"
 
-from Debug_functions import *
+from schBD_print.SCH.Debug_functions import *
 
 def str_2D(string, option = 1):
     """

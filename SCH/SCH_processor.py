@@ -6,9 +6,14 @@ Created on Sun Oct 20 03:04:13 2024
 """
 import re
 
-from string2D_functions import build_lines,str_2D, pad_join_2Dstr
-from __init__ import *
-from SCH_plotter import SCH_plotter
+from schBD_print.Util.tokenize_strings            import tokenizer_nl_str
+from schBD_print.Util.prune_transfer_function     import prune_algo
+from schBD_print.Util.string_decorators           import box_series, box_comp_open, box_comp_PD, box_pullup, box_comp_open_v3_top
+
+from schBD_print.SCH.string2D_functions import build_lines,str_2D, pad_join_2Dstr
+from schBD_print.SCH.SCH_plotter import SCH_plotter
+
+
 # progress_bars = ['▂', '▅', '▇', '█']
 progress_bars = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
 

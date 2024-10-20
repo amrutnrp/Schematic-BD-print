@@ -1,1 +1,1 @@
-from .tokenize_strings import tokenizer_nl_str
+from .web_functions  import make_web_page_nOpen

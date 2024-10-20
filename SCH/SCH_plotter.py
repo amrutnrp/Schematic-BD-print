@@ -4,8 +4,8 @@ Created on Wed Oct  2 00:31:03 2024
 
 @author: amrutnp
 """
-from string2D_functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pad_join_2Dstr, str_2D, glue_string
-from __init__ import box_comp_open_v3_top
+from schBD_print.SCH.string2D_functions import insert_blank_col_get, insert_blank_row, build_lines, make_comp_block, make_cap_block, view_str, add_tape, pad_join_2Dstr, str_2D, glue_string
+from schBD_print.Util.string_decorators import box_comp_open_v3_top
 
 
 net_block = '─{}─'
