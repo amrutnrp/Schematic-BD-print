@@ -233,6 +233,7 @@ def make_comp_block (comp_list , tok2_dict_local = {},  height_limit = 5 , dirn 
             str_block.append ('')
             level_ptr += 1
 
+    str_block.reverse()
     for i in range (len( str_block )):
         str_block[i] = add_tape (  str_block [i] , dirn)
         # view_str( str_block [i])
