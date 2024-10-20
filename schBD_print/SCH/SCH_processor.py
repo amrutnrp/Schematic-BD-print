@@ -16,10 +16,10 @@ from schBD_print.SCH.SCH_plotter import SCH_plotter
 
 
 # progress_bars = ['▂', '▅', '▇', '█']
-progress_bars = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
+# progress_bars = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
+progress_barH = ['▏', '▎', '▍', '▌', '▋', '▊', '█', '▉']
 
-
-debug_flag = False
+debug_flag = True
 node_processing_threshold = 200
 
 class SCH_processor():
@@ -32,11 +32,11 @@ class SCH_processor():
         self.LR_expansion = True
 
     def nextstep(self):
-        if self.progress_counter ==6:
+        if self.progress_counter ==7:
             self.progress_counter = 0
         else:
             self.progress_counter += 1
-        print (progress_bars[ self.progress_counter ], end='')
+        print (progress_barH[ self.progress_counter ], end='\n')
 
     def process_file(self, f_path):
         f= open (f_path ,'r')
@@ -159,6 +159,7 @@ class SCH_processor():
         _._root_other =[ i  for i in _.adj_nodes[_.root_idx] if not i.endswith('N') ]
 
         plotter = SCH_plotter()
+        plotter.set_debug(debug_flag)
         plotter.set_system_data( _.adjNodes_index,
                                  _.bond_type_list,
                                  _.nodes,
@@ -173,7 +174,7 @@ class SCH_processor():
         if ( len(_._root_net) == 0 and _.LR_expansion == True) or _.LR_expansion == False: #single net
             net = _.nodes [ _.root_idx ]
             plotter.set_expansion_direction('w')
-            _.S1= plotter.SCH_plot(net, retain_glue= debug_flag)
+            _.S1= plotter.SCH_plot(net)
             _.S3 = build_lines (_.S1, False)
         else:
             _.net_pval = [ _.tok2_pval[i] for i in  _._root_net]
@@ -193,9 +194,9 @@ class SCH_processor():
 
             _.net = _.nodes [ _.root_idx ]
             plotter.set_expansion_direction('e')
-            _.S1 = plotter.SCH_plot(_.net, adjacent_override = _.right_wing,retain_glue= debug_flag , netName_override = '─')
+            _.S1 = plotter.SCH_plot(_.net, adjacent_override = _.right_wing , netName_override = '─')
             plotter.set_expansion_direction('w')
-            _.S2 = plotter.SCH_plot(_.net, adjacent_override = _.left_wing+_._root_other ,retain_glue= debug_flag )
+            _.S2 = plotter.SCH_plot(_.net, adjacent_override = _.left_wing+_._root_other )
 
             _.S3 = pad_join_2Dstr(_.S1, _.S2, horizontal = True, dirn = 'w')
 

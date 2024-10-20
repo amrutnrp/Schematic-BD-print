@@ -24,6 +24,7 @@ class SCH_plotter:
         self.idx2           = 1
         self.opp_dir_idx1   = -1
 
+        self.retain_glue = False
     def set_system_data (self, adjNodes_index,bond_type_list, nodes, rev_LUT , RES, tok_2_block , broken_bonds):
         """
         Parameters
@@ -85,9 +86,10 @@ class SCH_plotter:
 #==============================================================================#==============================================================================
 #==============================================================================#==============================================================================
 #==============================================================================#==============================================================================
+    def set_debug (self,bool_value = False ):
+        self.retain_glue = bool_value
 
-
-    def SCH_plot(self, net, res = '', adjacent_override = None, retain_glue = False, netName_override = ''):
+    def SCH_plot(self, net, res = '', adjacent_override = None, netName_override = ''):
         """
         retain_glue -> keeps glue character intact for debug
 
@@ -325,10 +327,10 @@ class SCH_plotter:
                          dirn= sf.dirn )
         else:
             C5 = C4
-        C6 = build_lines (C5, retain_glue)
+        C6 = build_lines (C5, False)
 
     #==============================================================================#==============================================================================
-        if retain_glue:
+        if self.retain_glue:
             return C5
         else:
             return C6
