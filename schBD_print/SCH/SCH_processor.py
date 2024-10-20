@@ -164,7 +164,7 @@ class SCH_processor():
             _.LR_expansion = True
         #=====================================================================================
         #make dictionary fortok -> prune_depth_transfer value
-        _.tok2_pval = { i:_.prune_depth_trf[idx] for idx,i in enumerate(_.nodes)  }
+        _.tok2_pval = { i:_.level_depth_trf[idx] for idx,i in enumerate(_.nodes)  }
 
         #find_nets_only
         _._root_net= [ i  for i in _.adj_nodes[_.root_idx] if i.endswith('N') ]
@@ -193,22 +193,15 @@ class SCH_processor():
             _.n_combined = zip( _._root_net, _.net_pval)
             _.n_sorted = sorted(_.n_combined, key=lambda x: x[1], reverse=True)
             _._root_net2, _.net_pval2 = zip(*_.n_sorted)
-            _._root_sum_thresh = sum( _.net_pval2 )  /2.5
-            _.left_wing = []
-            _.left_sum = 0
-            for i in _._root_net2:
-                if _.left_sum > _._root_sum_thresh:
-                    break
-                _.left_sum += _.tok2_pval [ i ]
-                _.left_wing.append (i)
 
+            _.left_wing =  list(_._root_net2 [0: len(_._root_net2) >> 1 ] )
             _.right_wing = [ i for i in _._root_net if i not in  _.left_wing ]
 
             _.net = _.nodes [ _.root_idx ]
             plotter.set_expansion_direction('e')
-            _.S1 = plotter.SCH_plot(_.net, adjacent_override = _.right_wing , netName_override = '─')
+            _.S1 = plotter.SCH_plot(_.net, adjacent_override = _.left_wing+_._root_other , netName_override = '─')
             plotter.set_expansion_direction('w')
-            _.S2 = plotter.SCH_plot(_.net, adjacent_override = _.left_wing+_._root_other )
+            _.S2 = plotter.SCH_plot(_.net, adjacent_override = _.right_wing )
 
             _.S3 = pad_join_2Dstr(_.S1, _.S2, horizontal = True, dirn = 'w')
 
