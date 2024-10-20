@@ -6,16 +6,14 @@ Created on Mon Sep 30 17:05:50 2024
 """
 
 import os, re, time
-from Debug_functions import *
+from schBD_print import  *
 s= os.listdir('data')
 cwd = os.path.dirname(__file__)
 paths = [ os.path.join ( cwd, 'data', i) for i in s ]
 ls = range(len(paths))
-# ls= [1]
+ls= [1]
 del s
 
-from SCH_processor import SCH_processor
-from __init__ import *
 
 
 for i in ls :
@@ -29,7 +27,7 @@ for i in ls :
     obj.make_globals()
     S4= obj.get_view(2)
     view_str(S4)
-    time.sleep(1)
+    # time.sleep(1)
 
 
 
