@@ -168,3 +168,4 @@ data-pickle/
 /x*
 
 *.lnk
+*.pkl

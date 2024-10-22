@@ -11,23 +11,24 @@ s= os.listdir('data')
 cwd = os.path.dirname(__file__)
 paths = [ os.path.join ( cwd, 'data', i) for i in s ]
 ls = range(len(paths))
-ls= [1]
+ls= [8]
 del s
 
 
 
 for i in ls :
+
     obj = SCH_processor()
     obj.debug_flag = False
     obj.process_file( paths[i] )
     obj.pre_process()
     obj.process_nPlot()
     S= obj.get_view()
-    make_web_page_nOpen (S, openFlag = False)
-    # make_web_page_nOpen (S, openFlag = True)
+    # make_web_page_nOpen (S, openFlag = False)
+    make_web_page_nOpen (S, openFlag = True)
     obj.make_globals()
     S4= obj.get_view(2)
-    view_str(S4)
+    view_str(obj.S4)
     # time.sleep(1)
 
 
