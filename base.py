@@ -101,8 +101,16 @@ def find_walls(inp, start, inc,  space_bars ):
     ptrH= 0
     # find the horizontal subsections
     limH = len(inp) -1
-    while(ptrH <= limH):
-        if space_bars [ptrH] == 0:
+    while(True):
+        if ptrH >= limH:
+            if len(contents) == 0:
+                sections.append ( 0 )
+                if inp [ ptrH -1 ]  [ start +inc] != ' ':
+                    contents.append (1)
+                else:
+                    contents.append (-1)
+            break
+        elif space_bars [ptrH] == 0 :
             sections.append ( ptrH )
             if inp [ ptrH +1 ]  [ start +inc] != ' ':
                 contents.append (1)
@@ -140,27 +148,22 @@ def view_str(string):
 
 
 def get_2D_area(string, col1, col2, row1, row2, show = False):
+    if col1 > col2:
+        col1, col2 = col2, col1
     S = [ row [col1:col2 ] for row in string [row1:row2]  ]
     if show== True : view_str(S)
     return S
 
 
-def str_erase(string, col1, col2, row1, row2, show = False):
+def str_erase(string, col1, col2, row1, row2, replaceBy = ' ' ,show = False):
     S= string.copy()
+    substitute = replaceBy * (col2-col1)
     for row in range (row1, row2):
-        S [row] = string[row][:col1] + ' '*(col2-col1) + string[row][col2:]
+        S [row] = string[row][:col1] + substitute + string[row][col2:]
 
     if show== True : view_str(S)
     return S
 
-
-def str_replace(string, col1, col2, row1, row2, show = False):
-    S= string.copy()
-    for row in range (row1, row2):
-        S [row] = string[row][:col1] + '@'*(col2-col1) + string[row][col2:]
-
-    if show== True : view_str(S)
-    return S
 
 
 def str_paste (str_canvas, str_small, row, col,  show = False):
@@ -175,7 +178,32 @@ def str_paste (str_canvas, str_small, row, col,  show = False):
     return String
 
 
+def get_vertical_hooks( String):
+    """
+    Parameters
+    ----------
+    String : List of strings
+        2D string as input.
 
+    Returns
+    -------
+    vert_lines : list
+        Contains 3 items
+            Column number
+            [ row intervals  ];
+        rowInterval is a tuple, item 0 and items 1 when indexed yield start and stop characters of vertical line
+
+    """
+    row,col = shape(String)
+    vert_lines = []
+    for i in range (0,col):
+        each_col = get_2D_col(String, i )
+        s = Count_kch(each_col)
+        if s > lump_thresh:
+            lumps = find_lumps ( each_col )
+            if len(lumps) > 0:
+                vert_lines.append ([i,lumps ])
+    return vert_lines
 
 
 
