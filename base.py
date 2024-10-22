@@ -89,8 +89,8 @@ def monotonize(arr_inp):
 
 # wall_H = {' ', '─', '┌', '┐', '═', '╔', '╗'}
 
-wall_set = '║ '
-
+wall_set = '║ ╗╝'
+# wall_set = '║ '
 
 def find_walls(inp, start, inc,  space_bars ):
     limit = 0 if inc ==-1 else len(inp[0])-1
@@ -137,7 +137,7 @@ def find_walls(inp, start, inc,  space_bars ):
             if all_ok == True:
                 break
             ptr += inc
-        walls.append (ptr)
+        walls.append (ptr+inc)
 
     return (sections, walls, contents)
 
@@ -205,7 +205,24 @@ def get_vertical_hooks( String):
                 vert_lines.append ([i,lumps ])
     return vert_lines
 
-
+def str2D_mirror(string):
+    arr=  []
+    for row in string:
+        s= ''
+        temp = ''
+        for ch in row:
+            # print(ch)
+            if ch.isalnum ():
+                temp += ch
+            else:
+                if len(temp) != 0:
+                    s= ch + temp + s
+                    temp = ''
+                else:
+                    s = ch + s
+        arr.append(s)
+    # view_str(arr)
+    return arr
 
 
 
