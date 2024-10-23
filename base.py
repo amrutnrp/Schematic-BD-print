@@ -198,12 +198,21 @@ def get_vertical_hooks( String):
     vert_lines = []
     for i in range (0,col):
         each_col = get_2D_col(String, i )
-        s = Count_kch(each_col)
-        if s > lump_thresh:
+        if '└' in each_col:
             lumps = find_lumps ( each_col )
             if len(lumps) > 0:
                 vert_lines.append ([i,lumps ])
     return vert_lines
+
+mirror_dict ={
+        '╗':'╔',        '╔':'╗',
+        '╝':'╚',        '╚':'╝',
+        '╟':"╢",        '╢':'╟',
+        '┌':'┐',        '┐':'┌',
+        '└':'┘',        '┘':'└',
+        '├':'┤',        '┤':'├',
+
+        }
 
 def str2D_mirror(string):
     arr=  []
@@ -211,15 +220,17 @@ def str2D_mirror(string):
         s= ''
         temp = ''
         for ch in row:
+            print ( ch in mirror_dict)
+            ch2 = mirror_dict[ch] if ch in mirror_dict else ch
             # print(ch)
             if ch.isalnum ():
                 temp += ch
             else:
                 if len(temp) != 0:
-                    s= ch + temp + s
+                    s= ch2 + temp + s
                     temp = ''
                 else:
-                    s = ch + s
+                    s = ch2 + s
         arr.append(s)
     # view_str(arr)
     return arr

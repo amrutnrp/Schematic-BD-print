@@ -86,6 +86,7 @@ while(True):
             ptr = 0 ; ptr2 = 1
             moving_up = False
             low_limit_row = 0
+            prev_height = 0
 
             while(row_sp > 0  and ptr < L-1 and ptr2 < L-1 ):
                 # get parameters
@@ -101,17 +102,20 @@ while(True):
                         moving_up = False
                         stopAt_level[ ptr ] = row_sp
                         ptr, ptr2 = ptr + 1, ptr + 2
-                        low_limit_row = row_sp + H
+                        low_limit_row = row_sp + H +1
                         row_sp = max( row_sp + H, space_row)
+                        prev_height = H
                 elif moving_up == True:
                     moving_up = False
                     stopAt_level[ ptr ] = row_sp+1
                     ptr, ptr2 = ptr + 1, ptr + 2
-                    low_limit_row = row_sp + H
+                    low_limit_row = row_sp + H +1
                     row_sp = max( row_sp + H, space_row)
+                    prev_height = H
                 elif row_sp > space_row:
-                    stopAt_level[ ptr ] = stopAt_level[ ptr -1 ] + H
+                    stopAt_level[ ptr ] = stopAt_level[ ptr -1 ] + prev_height
                     ptr = ptr + 1
+                    prev_height = H
                 else:
                     order[ptr], order[ptr2] = order[ptr2], order[ptr]
                     ptr2 += 1
@@ -138,7 +142,8 @@ while(True):
 
             # overwrite sections
             for i in range (L-1):
-                SS3 = str_paste( SS3 , data_snip[i], ls[0] + stopAt_level[i] , col_idx+1 , True)
+                SS3 = str_paste( SS3 , data_snip[i], ls[0] + stopAt_level[i] , col_idx+1 , False)
+            SS3 = build_lines(SS3, True)
 
             SS3 = build_lines(SS3, False)
 
@@ -147,6 +152,7 @@ while(True):
             #+=============================
             any_changed = True
             # break
+            continue    # re-do all calculation before making any changes
 
 
         else:
@@ -170,8 +176,6 @@ while(True):
             stopAt_level = []
 
             row_sp= sections[-1][0] -1
-            reducing_height = last_space
-
 
             row_sectn = 0 # dummy
             ptr = L-1
@@ -190,7 +194,6 @@ while(True):
                             break
 
                         else:
-                            # snippet [ row_sp +1 ] = '@'*len(snippet[0])
                             moving_up = False
                             stopAt_level .append (  row_sp )
                             order.append ( ptr)
@@ -207,7 +210,6 @@ while(True):
                     ptr = ptr -1
                     low_limit_row = stopAt_level[-1] + H
                     row_sp =  sections[ptr][0] -1
-                    # snippet [ last_space  ] = '@'*len(snippet[0])
                 else:
                     break
 
