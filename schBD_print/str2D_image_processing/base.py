@@ -4,11 +4,11 @@ Created on Mon Oct 21 14:05:28 2024
 
 @author: amrutnp
 """
-
 lump_thresh = 4
 vert_lut = tuple('├│┤└┘')
 
-from schBD_print  import *
+from schBD_print.SCH.Debug_functions import view_str, validate_rect, shape
+from schBD_print.SCH.string2D_functions import str_2D, build_lines, glue_string
 
 def get_2D_col (String, col, rowslice = None):
     if rowslice == None:

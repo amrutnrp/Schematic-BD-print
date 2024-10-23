@@ -4,7 +4,7 @@ Created on Wed Oct 23 11:52:11 2024
 
 @author: amrutnp
 """
-from base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror
+from schBD_print.str2D_image_processing.base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror
 
 def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, view_debug= False):
 

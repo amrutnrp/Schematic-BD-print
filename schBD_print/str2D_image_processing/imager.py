@@ -1,7 +1,7 @@
 
 
-from base import *
-from Lift_Twist import uplift, twist
+from schBD_print.str2D_image_processing.base import *
+from schBD_print.str2D_image_processing.Lift_Twist import uplift, twist
 
 _debug_view = False
 def improve_view(string):

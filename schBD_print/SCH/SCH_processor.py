@@ -14,6 +14,8 @@ from schBD_print.Util.string_decorators           import box_series, box_comp_op
 from schBD_print.SCH.string2D_functions import build_lines,str_2D, pad_join_2Dstr
 from schBD_print.SCH.SCH_plotter import SCH_plotter
 
+from schBD_print.str2D_image_processing.imager            import improve_view
+
 
 # progress_barV = ['▂', '▅', '▇', '█']
 progress_barV = ['▁', '▂', '▃', '▅', '▆', '▇', '▉' ]
