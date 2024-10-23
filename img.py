@@ -1,19 +1,9 @@
 
-import pickle
 
-import sys
 from base import *
 from Lift_Twist import uplift, twist
-_this = sys.modules[__name__]
-with open('s.pkl', 'rb') as f:
-    S1, S2, S3 = pickle.load(f)
-
-# del S1, S3
-# _s_obj = S2
 
 _debug_view = False
-
-
 def improve_view(string):
     _s_obj = string.copy()
     any_changed = True
@@ -90,6 +80,18 @@ def improve_view(string):
     return _s_obj
 
 
+if __name__ == "__main__":
 
-A= improve_view(S2)
-view_str(A)
+    import pickle
+
+    import sys
+    _this = sys.modules[__name__]
+    with open('s.pkl', 'rb') as f:
+        S1, S2, S3 = pickle.load(f)
+
+    # del S1, S3
+    # _s_obj = S2
+
+
+    A= improve_view(S2)
+    view_str(A)
