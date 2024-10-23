@@ -63,8 +63,8 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
             # view_str(strip2)
 
         if ptr2 == L-1:
-            print ('can\'t improve')
-            return
+            if view_debug: print ('can\'t improve')
+            return -1
         #Erase string section
         SS2= str_erase(_s_obj, col_idx, col_idx+inc,  lump_start +1, lump_end+1, replaceBy= glue_string ) #,show = False)
         SS3= str_erase(SS2 , col_idx+inc, max(prime_spc)+ col_idx-inc, lump_start+ sections[1][0], lump_start +sections[-1][-1] ) #, show = False)
@@ -98,8 +98,9 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         sections2, walls2, contents2  = find_walls (snippet, col_idx, inc*-1 , other_spc)
         # if debug_view: view_str( _s_obj  )
         if contents2[-1] != -1:
-            print ('isolated - can\'t twist ')
-            return
+            if view_debug: print ('isolated - can\'t twist ')
+            return -1
+
 
         L= len(walls)
         sections2 [-1][-1] = lump_end # replace -1 by actual value
@@ -151,7 +152,8 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         SS2 = _s_obj.copy()
         # view_str(snip)
         data_snip = []
-
+        if order == []:
+            return -2
         SS2= str_erase(SS2, col_idx, col_idx+inc, lump_start+1, lump_end+1, replaceBy= glue_string ) #,show = False)
         for j,i in  enumerate(order) :
             data = get_2D_area(snip, col_idx+inc, walls[i] , sections[i][0], sections[i][1] ) #, False)

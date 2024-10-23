@@ -182,7 +182,8 @@ def str_paste (str_canvas, str_small, row, col,  show = False):
 
     return String
 
-
+def is_blank_line (string):
+    return string.strip() == ''
 def get_vertical_hooks( String):
     """
     Parameters
@@ -241,13 +242,21 @@ def str2D_mirror(string):
     return arr
 
 
-def str_crop(string):
+def str2D_strip(string):
     arr= []
     for row in string:
         if row.strip() != '':
             arr.append (row)
-
-    return row
+    arr2 = []
+    col2_del = []
+    for col in range(len(arr[0])):
+        col_data = set([ row[col] for row in arr])
+        if len(col_data) == 1 and col_data[0] == ' ':
+            col2_del.append ()
+    for row in arr:
+        new_row_list  = [ ch for idx, ch in enumerate(row) if idx not in   col2_del    ]
+        arr2.append ( ''.join(new_row_list))
+    return arr2
 
 if __name__ == "__main__":
 
