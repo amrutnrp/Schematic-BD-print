@@ -220,7 +220,7 @@ def str2D_mirror(string):
         s= ''
         temp = ''
         for ch in row:
-            print ( ch in mirror_dict)
+            # print ( ch in mirror_dict)
             ch2 = mirror_dict[ch] if ch in mirror_dict else ch
             # print(ch)
             if ch.isalnum ():
@@ -236,6 +236,13 @@ def str2D_mirror(string):
     return arr
 
 
+def str_crop(string):
+    arr= []
+    for row in string:
+        if row.strip() != '':
+            arr.append (row)
+
+    return row
 
 if __name__ == "__main__":
 
