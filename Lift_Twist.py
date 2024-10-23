@@ -98,7 +98,7 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         sections2, walls2, contents2  = find_walls (snippet, col_idx, inc*-1 , other_spc)
         # if debug_view: view_str( _s_obj  )
         if contents2[-1] != -1:
-            print ('isolated - can\t twist ')
+            print ('isolated - can\'t twist ')
             return
 
         L= len(walls)

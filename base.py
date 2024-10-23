@@ -91,6 +91,7 @@ def monotonize(arr_inp):
 
 wall_set = '║ ╗╝'
 # wall_set = '║ '
+connecting_str = '─'
 
 def find_walls(inp, start, inc,  space_bars ):
     limit = 0 if inc ==-1 else len(inp[0])-1
@@ -101,10 +102,12 @@ def find_walls(inp, start, inc,  space_bars ):
     ptrH= 0
     # find the horizontal subsections
     limH = len(inp) -1
+    branching_flag = False
+    last_origin = 0
     while(True):
         if ptrH >= limH:
-            if len(contents) == 0:
-                sections.append ( 0 )
+            if not branching_flag:
+                sections.append( last_origin )
                 if inp [ ptrH -1 ]  [ start +inc] != ' ':
                     contents.append (1)
                 else:
@@ -112,11 +115,13 @@ def find_walls(inp, start, inc,  space_bars ):
             break
         elif space_bars [ptrH] == 0 :
             sections.append ( ptrH )
-            if inp [ ptrH +1 ]  [ start +inc] != ' ':
+            branching_flag = ( inp [ ptrH +1 ]  [ start +inc] == connecting_str )
+            if inp [ ptrH +1 ]  [ start +inc] != ' ' :
                 contents.append (1)
             else:
                 contents.append (-1)
             ptrH += 3
+            last_origin = ptrH
         else:
             ptrH += 1
     #===== sections discovered ============
