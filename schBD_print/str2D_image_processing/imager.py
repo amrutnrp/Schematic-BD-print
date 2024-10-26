@@ -48,8 +48,8 @@ def improve_view(string):
                 prime_spc = lsl.copy()
                 other_spc = lsr.copy()
 
-            sections, walls, contents  = find_walls (snippet, col_idx, inc , prime_spc)
-            sections [-1][-1] = len(snippet)  # replace -1 by actual value
+            sections, walls, contents  = find_walls_infected (snippet, col_idx, inc , prime_spc)
+            # sections [-1][-1] = len(snippet)  # replace -1 by actual value
 
             func = 0
             if contents[0] == -1 and contents[1] == 1:  #condition for uplift
@@ -66,7 +66,7 @@ def improve_view(string):
             # raise SystemExit()
 
             if func == 1:
-                SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, False)
+                SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, contents, False)
             elif func == 2:
                 SS = twist(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),other_spc, inc, False)
             else:
@@ -76,6 +76,8 @@ def improve_view(string):
                 _s_obj = build_lines (SS, False)
                 _s_obj = str2D_strip(_s_obj)
                 any_changed = True
+
+            # return _s_obj
 
     return _s_obj
 

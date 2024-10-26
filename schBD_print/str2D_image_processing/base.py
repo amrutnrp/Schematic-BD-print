@@ -9,6 +9,7 @@ vert_lut = tuple('├│┤└┘')
 
 from schBD_print.SCH.Debug_functions import view_str, validate_rect, shape
 from schBD_print.SCH.string2D_functions import str_2D, build_lines, glue_string
+from schBD_print.str2D_image_processing.infection_algo import track_infected, view_mark
 
 def get_2D_col (String, col, rowslice = None):
     if rowslice == None:
@@ -146,7 +147,97 @@ def find_walls(inp, start, inc,  space_bars ):
 
     return (sections, walls, contents)
 
+right_branching  = '├└'
+left_branching = "┤┘"
+def find_walls_infected(inp, start, inc,  space_bars ):
+    limit = 0 if inc ==-1 else len(inp[0])-1
+    # print ([ i[start] for i in inp])
+    # view_str(inp)
+    braching_list = right_branching if inc==1 else left_branching
+    seed_list = [ idx for idx,row in enumerate(inp) if row[start] in braching_list   ]
+    # print (seed_list)
 
+    details = []
+    for seed in seed_list:
+
+        details_i = track_infected(inp, start+inc, seed, inc)
+        details.append(details_i)
+
+    sections = []
+    contents = []
+    walls = []
+
+    id_start, id_end, id_ok, id_col = 1,2,0,3
+    prev_section_end = -1
+    ptr =  0
+
+    print (details)
+
+    while (ptr < len(details)):
+        if details[ptr][id_start] == prev_section_end+1:
+            sections .append( [ details[ptr][id_start] , details[ptr][id_end]  ])
+            walls.append( details[ptr][id_col]  )
+            if details[ptr][id_ok] == 1:
+                contents .append(1)
+            else:
+                contents .append(-3)
+
+            prev_section_end = details[ptr][id_end]
+            ptr = ptr+1
+        else: # encountered space area, unaccounted
+            sections .append( [ prev_section_end+1 , details[ptr][id_start]-1  ])
+            contents.append (-1)
+            walls.append(-1)
+            prev_section_end = details[ptr][id_start]-1
+
+
+
+    # ptrH= 0
+    # # find the horizontal subsections
+    # limH = len(inp) -1
+    # branching_flag = False
+    # last_origin = 0
+    # while(True):
+    #     if ptrH >= limH:
+    #         if not branching_flag:
+    #             sections.append( last_origin )
+    #             if inp [ ptrH -1 ]  [ start +inc] != ' ':
+    #                 contents.append (1)
+    #             else:
+    #                 contents.append (-1)
+    #         break
+    #     elif space_bars [ptrH] == 0 :
+    #         sections.append ( ptrH )
+    #         branching_flag = ( inp [ ptrH +1 ]  [ start +inc] == connecting_str )
+    #         if inp [ ptrH +1 ]  [ start +inc] != ' ' :
+    #             contents.append (1)
+    #         else:
+    #             contents.append (-1)
+    #         ptrH += 3
+    #         last_origin = ptrH
+    #     else:
+    #         ptrH += 1
+    # #===== sections discovered ============
+    # sections.append (  None)
+    # sections = [ [ sections[m] ,sections[m+1] ] for m in range(len(sections)-1) ]
+
+
+    #
+    # for section in sections:
+    #     ptr = start + inc
+    #     while (ptr <= limit):
+    #         column =  get_2D_col(inp, ptr,  section )
+    #         all_chr = set(column)
+    #         all_ok = True
+    #         for ch in all_chr:
+    #             if ch not in wall_set:
+    #                 all_ok = False
+    #         if all_ok == True:
+    #             break
+    #         ptr += inc
+    #     walls.append (ptr+inc)
+
+    return (sections, walls, contents)
 
 def view_str(string):
     print ( '\n' .join (string ) )

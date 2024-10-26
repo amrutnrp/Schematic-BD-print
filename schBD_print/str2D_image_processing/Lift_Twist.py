@@ -6,10 +6,9 @@ Created on Wed Oct 23 11:52:11 2024
 """
 from schBD_print.str2D_image_processing.base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror
 
-def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, view_debug= False):
+def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, contents, view_debug= False):
 
         L= len(walls)
-
         lump_start, lump_end = lump_start_end
 
 
@@ -17,7 +16,7 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
         order = list(range (1,L))
         stopAt_level = [-1] * (L-1)
 
-        space_row = sections[0][1] - 1
+        space_row = sections[0][1] -1 +1
         row_sp, row_sectn = space_row,1
 
         ptr = 0 ; ptr2 = 1
@@ -28,7 +27,7 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
         while(row_sp > 0  and ptr < L-1 and ptr2 < L-1 ):
             # get parameters
             row_sectn = order[ptr]
-            H =sections[row_sectn][1]-  sections[row_sectn][0]
+            H =sections[row_sectn][1]-  sections[row_sectn][0] +1
             W = walls[ row_sectn  ] - col_idx
             Avl_W = prime_spc [row_sp]
 
@@ -67,14 +66,14 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
             return -1
         #Erase string section
         SS2= str_erase(_s_obj, col_idx, col_idx+inc,  lump_start +1, lump_end+1, replaceBy= glue_string ) #,show = False)
-        SS3= str_erase(SS2 , col_idx+inc, max(prime_spc)+ col_idx-inc, lump_start+ sections[1][0], lump_start +sections[-1][-1] ) #, show = False)
+        SS3= str_erase(SS2 , col_idx+inc, max(prime_spc)+ col_idx-inc, lump_start+ sections[1][0], lump_start +sections[-1][-1] +1) #, show = False)
         # using 2 here is controvercial ??
         # get sections
         snip = _s_obj [ lump_start: lump_end +2]
         data_snip = []
         for i in range( L - 1):
             j = i+1
-            data = get_2D_area(snip, col_idx+inc, walls[j] , sections[j][0], sections[j][1] ) #, False)
+            data = get_2D_area(snip, col_idx+inc, walls[j] , sections[j][0], sections[j][1] +1) #, False)
             data_snip.append (data)
 
         # overwrite sections
@@ -108,7 +107,7 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         order = []
         stopAt_level = []
 
-        row_sp= sections[-1][0] -1
+        row_sp= sections[-1][0] -1+1
 
         row_sectn = 0 # dummy
         ptr = L-1
@@ -116,11 +115,11 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         low_limit_row = 0
         while (True):
             # row_sectn = order[ptr]
-            H =sections[ptr][1]-  sections[ptr][0]
+            H =sections[ptr][1]-  sections[ptr][0]+1
             W = abs( walls[ ptr  ] - col_idx )
             Avl_W = other_spc [row_sp  ]
 
-            if W< Avl_W:
+            if W < Avl_W:
                 row_sp = row_sp -1
                 if row_sp <= low_limit_row:
                     if moving_up == False:
@@ -156,9 +155,9 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
             return -2
         SS2= str_erase(SS2, col_idx, col_idx+inc, lump_start+1, lump_end+1, replaceBy= glue_string ) #,show = False)
         for j,i in  enumerate(order) :
-            data = get_2D_area(snip, col_idx+inc, walls[i] , sections[i][0], sections[i][1] ) #, False)
+            data = get_2D_area(snip, col_idx+inc, walls[i] , sections[i][0], sections[i][1] +1) #, False)
             data_snip.append (data)
-            SS2= str_erase(SS2 , col_idx+inc, walls[i], lump_start+ sections[i][0], lump_start+ sections[i][-1]) #, show = False)
+            SS2= str_erase(SS2 , col_idx+inc, walls[i], lump_start+ sections[i][0], lump_start+ sections[i][-1]+1) #, show = False)
             DMir  = str2D_mirror( data )
             SS2 = str_paste( SS2 , DMir, lump_start + stopAt_level[j], col_idx+1-inc*len(data[0])-1) #, False)
         return SS2

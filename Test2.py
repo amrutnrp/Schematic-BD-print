@@ -1,5 +1,6 @@
 
 from schBD_print import improve_view, view_str
+# from imager import improve_view, view_str
 
 
 if __name__ == "__main__":
