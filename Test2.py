@@ -1,5 +1,5 @@
 
-from schBD_print import improve_view, view_str
+from schBD_print import *
 # from imager import improve_view, view_str
 
 

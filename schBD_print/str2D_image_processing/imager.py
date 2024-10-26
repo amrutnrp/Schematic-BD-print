@@ -60,6 +60,7 @@ def improve_view(string):
                 if _debug_view: print ( 'UPL')
             elif len(set(contents)) == 1:
                 if _debug_view: print ( 'TWS')
+                # continue
                 func = 2
             else:
                 print ('weird condition')

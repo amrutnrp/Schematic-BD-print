@@ -11,6 +11,10 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
         L= len(walls)
         lump_start, lump_end = lump_start_end
 
+        # strip = _s_obj [lump_start: lump_end +2]
+
+
+
 
 
         order = list(range (1,L))
@@ -63,6 +67,7 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
 
         if ptr2 == L-1:
             if view_debug: print ('can\'t improve')
+            # print ('can\'t improve')
             return -1
         #Erase string section
         SS2= str_erase(_s_obj, col_idx, col_idx+inc,  lump_start +1, lump_end+1, replaceBy= glue_string ) #,show = False)

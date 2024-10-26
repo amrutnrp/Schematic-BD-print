@@ -332,6 +332,14 @@ def str2D_mirror(string):
     # view_str(arr)
     return arr
 
+def find_last_index (list_a, item):
+    list_B = list_a.copy()
+    list_B.reverse()
+    if item in list_B:
+        return len(list_B) - list_B.index (item ) - 1
+    else:
+        return -1
+
 
 def str2D_strip(string):
     arr= []
