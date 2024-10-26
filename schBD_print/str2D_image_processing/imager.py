@@ -64,6 +64,38 @@ def improve_view(string):
                 func = 2
             else:
                 print ('weird condition')
+                # last_sp = last_sp_copy =  find_last_index(contents, -1)
+                # if last_sp != None:
+                #     last_sp += 1
+                #     while ( last_sp < len(contents)):
+                #         if contents [last_sp] != 1:
+                #             break
+                #         last_sp += 1
+                #     if last_sp < len(contents): # if it less then sometihng bas happened
+                #         pass
+                #     else:
+                #         pass #===
+                #         last_sp = last_sp_copy
+                #         contents = contents[ last_sp: ]
+                #         sections = sections[last_sp: ]
+                #         walls = walls[last_sp: ]
+
+                #         # adjust other values  , normalize them
+                #         origin = sections [0][0] -1
+
+                #         lump_start = lump_start +origin
+
+                #         prime_spc = [  prime_spc[kk] for kk, kk2 in enumerate(ls) if kk2>= origin]
+
+                #         sections = [  (i2-origin, j2-origin)  for i2,j2 in sections ]
+
+                #         snippet= _s_obj [lump_start: lump_end +2]
+
+                #         view_str(snippet)
+
+                #         func = 1
+
+
             # raise SystemExit()
 
             if func == 1:
@@ -74,6 +106,7 @@ def improve_view(string):
                 print ('No function ')
             12
             if type(SS) == list :
+                # view_str(SS)
                 _s_obj = build_lines (SS, False)
                 _s_obj = str2D_strip(_s_obj)
                 any_changed = True
