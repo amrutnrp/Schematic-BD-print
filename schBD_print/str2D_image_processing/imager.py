@@ -7,6 +7,7 @@ _debug_view = False
 def improve_view(string):
     _s_obj = string.copy()
     any_changed = True
+    twist_done = False
     while(any_changed == True):
         vert_lines = get_vertical_hooks(_s_obj)
         if _debug_view:
@@ -48,10 +49,16 @@ def improve_view(string):
                 prime_spc = lsl.copy()
                 other_spc = lsr.copy()
 
-            sections, walls, contents  = find_walls_infected (snippet, col_idx, inc , prime_spc)
+            sections, walls, contents, branch_snips  = find_walls_infected (snippet, col_idx, inc , prime_spc)
+            # wall is absolute
             # sections [-1][-1] = len(snippet)  # replace -1 by actual value
+            # print (col_idx, contents, ls[0], sections)
 
             func = 0
+
+            if len(contents) == 0:
+                # already twisted
+                continue
             if contents[0] == -1 and contents[1] == 1:  #condition for uplift
                 if len(set(contents[1:])) != 1:
                     print ('weird rendering done, now can\'t get out')
@@ -96,11 +103,11 @@ def improve_view(string):
                 #         func = 1
 
 
-            # raise SystemExit()
-
-            if func == 1:
-                SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, contents, False)
-            elif func == 2:
+            # if func == 1 and twist_done == True:
+            if func == 1 :
+                SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, contents,branch_snips, False)
+            # elif func == 2 and twist_done == False:
+            elif func == 2 :
                 SS = twist(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),other_spc, inc, False)
             else:
                 print ('No function ')
@@ -110,8 +117,13 @@ def improve_view(string):
                 _s_obj = build_lines (SS, False)
                 _s_obj = str2D_strip(_s_obj)
                 any_changed = True
+            else:
+                pass
+                # print ('no result')
 
             # return _s_obj
+    if any_changed == False and twist_done == False:
+        twist_done = True
 
     return _s_obj
 

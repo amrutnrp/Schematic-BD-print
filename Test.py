@@ -11,7 +11,7 @@ s= os.listdir('data')
 cwd = os.path.dirname(__file__)
 paths = [ os.path.join ( cwd, 'data', i) for i in s ]
 ls = range(len(paths))
-ls= [8]
+ls= [6,7,8]
 del s
 
 
@@ -25,10 +25,10 @@ for i in ls :
     obj.process_nPlot()
     S= obj.get_view()
     # make_web_page_nOpen (S, openFlag = False)
-    make_web_page_nOpen (S, openFlag = True)
+    make_web_page_nOpen (S, openFlag = True, file_Path = 's_{}.html'.format (i))
     obj.make_globals()
     S4= obj.get_view(2)
-    view_str(obj.S4)
+    view_str(obj.S3)
     # time.sleep(1)
 
 

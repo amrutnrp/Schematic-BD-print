@@ -225,9 +225,9 @@ def track_infected(input_str, seed_col, seed_row, inc):
 
     if any([ True if k not in wall_set_infection else False for k in col_last ])==True:
         print ("Blocked to move")
-        return (-1, min_row, max_row, max_col)
+        return (-1, min_row, max_row, max_col, str_cut)
     else:
-        return (1, min_row, max_row, max_col)
+        return (1, min_row, max_row, max_col , str_cut)
 
 if __name__ == "__main__":
 

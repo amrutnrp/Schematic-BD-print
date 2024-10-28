@@ -263,6 +263,11 @@ right_asking = '┐─┘┤┬┴┼' + glue_string
 down_asking  = '└│┘┴├┤┼╧' + glue_string
 
 def build_lines( inp_string_array , debug_flag = False):
+
+    if validate_rect (inp_string_array) == False:
+        print ('Building lines , but failed, as input is not a matrix\ bad length rows')
+        raise SystemExit()
+
     # list only method : #LM
     # do padding
     w = len(inp_string_array[0]) +2

@@ -16,7 +16,7 @@ def make_web_page_nOpen(string_input, file_Path = 's.html', openFlag = False):
     f.write(html2)
     f.close()
 
-    if openFlag != False: os.startfile ( 's.html' )
+    if openFlag != False: os.startfile ( file_Path )
 
 
 auto_fit_css = '''

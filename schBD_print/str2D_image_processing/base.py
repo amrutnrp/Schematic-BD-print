@@ -153,9 +153,25 @@ def find_walls_infected(inp, start, inc,  space_bars ):
     limit = 0 if inc ==-1 else len(inp[0])-1
     # print ([ i[start] for i in inp])
     # view_str(inp)
-    braching_list = right_branching if inc==1 else left_branching
-    seed_list = [ idx for idx,row in enumerate(inp) if row[start] in braching_list   ]
-    # print (seed_list)
+    if inc==1:
+        main_braching_list = right_branching
+        reverse_branching_ls = left_branching
+    else:
+         reverse_branching_ls = right_branching
+         main_braching_list = left_branching
+    seed_list_1 = [ idx for idx,row in enumerate(inp) if row[start] in main_braching_list   ]
+    seed_list_2 = [ idx for idx,row in enumerate(inp) if row[start] in reverse_branching_ls   ]
+
+    if len (seed_list_1) != 0 and len (seed_list_2) == 0:
+        seed_list = seed_list_1
+    elif len(seed_list_2) != 0:
+        if seed_list_1[0] > seed_list_2[-1]:
+            seed_list = seed_list_1
+        else:
+            return [],[],[],[]
+    else:
+        print (seed_list_1, seed_list_2)
+        return [],[],[],[]
 
     details = []
     for seed in seed_list:
@@ -166,12 +182,11 @@ def find_walls_infected(inp, start, inc,  space_bars ):
     sections = []
     contents = []
     walls = []
+    snips = []
 
-    id_start, id_end, id_ok, id_col = 1,2,0,3
+    id_start, id_end, id_ok, id_col, id_snip = 1,2,0,3, 4
     prev_section_end = -1
     ptr =  0
-
-    print (details)
 
     while (ptr < len(details)):
         if details[ptr][id_start] == prev_section_end+1:
@@ -181,6 +196,7 @@ def find_walls_infected(inp, start, inc,  space_bars ):
                 contents .append(1)
             else:
                 contents .append(-3)
+            snips.append ( details [ptr][id_snip] )
 
             prev_section_end = details[ptr][id_end]
             ptr = ptr+1
@@ -189,6 +205,7 @@ def find_walls_infected(inp, start, inc,  space_bars ):
             contents.append (-1)
             walls.append(-1)
             prev_section_end = details[ptr][id_start]-1
+            snips.append ( [''] )
 
 
 
@@ -237,25 +254,33 @@ def find_walls_infected(inp, start, inc,  space_bars ):
     #         ptr += inc
     #     walls.append (ptr+inc)
 
-    return (sections, walls, contents)
+    return (sections, walls, contents, snips)
 
 def view_str(string):
     print ( '\n' .join (string ) )
 
 
 def get_2D_area(string, col1, col2, row1, row2, show = False):
+    """
+    row col values are inclusive of both boundaries
+    """
     if col1 > col2:
         col1, col2 = col2, col1
-    S = [ row [col1:col2 ] for row in string [row1:row2]  ]
+    S = [ row [col1:col2+1 ] for row in string [row1:row2+1]  ]
     if show== True : view_str(S)
     return S
 
 
 def str_erase(string, col1, col2, row1, row2, replaceBy = ' ' ,show = False):
+    """
+    row col values are inclusive of both boundaries
+    """
     S= string.copy()
-    substitute = replaceBy * (col2-col1)
-    for row in range (row1, row2):
-        S [row] = string[row][:col1] + substitute + string[row][col2:]
+    col22= col2+1
+    row22 = row2+1
+    substitute = replaceBy * (col22-col1)
+    for row in range (row1, row22):
+        S [row] = string[row][:col1] + substitute + string[row][col22:]
 
     if show== True : view_str(S)
     return S
@@ -263,6 +288,12 @@ def str_erase(string, col1, col2, row1, row2, replaceBy = ' ' ,show = False):
 
 
 def str_paste (str_canvas, str_small, row, col,  show = False):
+    """
+    row and col are inclusive of boundaries
+    """
+    if validate_rect(str_canvas) == False or validate_rect(str_small) == False:
+        print ('BAD shape str_paste ')
+        raise SystemExit()
     r,c = shape (str_small)
     String = str_canvas.copy()
     for row_i in range (r):

@@ -189,7 +189,8 @@ class SCH_processor():
             net = _.nodes [ _.root_idx ]
             plotter.set_expansion_direction('w')
             _.S1= plotter.SCH_plot(net)
-            _.S3 = build_lines (_.S1, False)
+            _.S30 = build_lines (_.S1, False)
+            _.S3 = improve_view (_.S30)
         else:
             _.net_pval = [ _.tok2_pval[i] for i in  _._root_net]
             _.n_combined = zip( _._root_net, _.net_pval)
@@ -204,8 +205,10 @@ class SCH_processor():
             _.S1 = plotter.SCH_plot(_.net, adjacent_override = _.left_wing+_._root_other , netName_override = '─')
             plotter.set_expansion_direction('w')
             _.S2 = plotter.SCH_plot(_.net, adjacent_override = _.right_wing )
+            _.S21 = improve_view (_.S2)
+            _.S11 = improve_view (_.S1)
 
-            _.S3 = pad_join_2Dstr(_.S1, _.S2, horizontal = True, dirn = 'w')
+            _.S3 = pad_join_2Dstr(_.S11, _.S21, horizontal = True, dirn = 'w')
 
 
         _.S4 = build_lines (_.S3 , False)

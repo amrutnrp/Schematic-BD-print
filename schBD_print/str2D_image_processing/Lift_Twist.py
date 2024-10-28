@@ -6,7 +6,7 @@ Created on Wed Oct 23 11:52:11 2024
 """
 from schBD_print.str2D_image_processing.base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror
 
-def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, contents, view_debug= False):
+def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, contents,branch_snips, view_debug= False):
 
         L= len(walls)
         lump_start, lump_end = lump_start_end
@@ -69,21 +69,28 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
             if view_debug: print ('can\'t improve')
             # print ('can\'t improve')
             return -1
+        # if all ( [ i==-1 for i in stopAt_level   ]) == True:
+        if  -1 in stopAt_level:
+            print ('Nothing changed')
+            return -3
         #Erase string section
-        SS2= str_erase(_s_obj, col_idx, col_idx+inc,  lump_start +1, lump_end+1, replaceBy= glue_string ) #,show = False)
-        SS3= str_erase(SS2 , col_idx+inc, max(prime_spc)+ col_idx-inc, lump_start+ sections[1][0], lump_start +sections[-1][-1] +1) #, show = False)
+        SS3= str_erase(_s_obj, col_idx, col_idx,  lump_start , lump_end, replaceBy= glue_string ) #,show = False)
         # using 2 here is controvercial ??
         # get sections
         snip = _s_obj [ lump_start: lump_end +2]
-        data_snip = []
+        # data_snip = []
         for i in range( L - 1):
+            #get the snip
             j = i+1
-            data = get_2D_area(snip, col_idx+inc, walls[j] , sections[j][0], sections[j][1] +1) #, False)
-            data_snip.append (data)
+            data = get_2D_area(snip, col_idx+inc, walls[j] -inc, sections[j][0], sections[j][1]) #, False)
+            # data_snip.append (data)
 
-        # overwrite sections
-        for i in range (L-1):
-            SS3 = str_paste( SS3 , data_snip[i], lump_start + stopAt_level[i] , col_idx+1 , False)
+            #Erase previous area, in master canvas
+            SS3 = str_erase ( SS3, col_idx+inc , walls[j]-inc, lump_start+ sections[j][0] ,  lump_start +sections[j][-1] , ' ')
+
+            #paste in new area
+            # overwrite sections
+            SS3 = str_paste( SS3 , data, lump_start + stopAt_level[i] , col_idx+1 , False)
 
         SS3 = build_lines(SS3, False)
 
@@ -155,14 +162,14 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
         snip = _s_obj [ lump_start: lump_end +2]
         SS2 = _s_obj.copy()
         # view_str(snip)
-        data_snip = []
+        # data_snip = []
         if order == []:
             return -2
-        SS2= str_erase(SS2, col_idx, col_idx+inc, lump_start+1, lump_end+1, replaceBy= glue_string ) #,show = False)
+        SS2= str_erase(SS2, col_idx, col_idx, lump_start, lump_end, replaceBy= glue_string ) #,show = False)
         for j,i in  enumerate(order) :
-            data = get_2D_area(snip, col_idx+inc, walls[i] , sections[i][0], sections[i][1] +1) #, False)
-            data_snip.append (data)
-            SS2= str_erase(SS2 , col_idx+inc, walls[i], lump_start+ sections[i][0], lump_start+ sections[i][-1]+1) #, show = False)
+            data = get_2D_area(snip, col_idx+inc, walls[i] -inc, sections[i][0], sections[i][1] ) #, False)
+            # data_snip.append (data)
+            SS2= str_erase(SS2 , col_idx+inc, walls[i] -inc, lump_start+ sections[i][0], lump_start+ sections[i][-1]) #, show = False)
             DMir  = str2D_mirror( data )
             SS2 = str_paste( SS2 , DMir, lump_start + stopAt_level[j], col_idx+1-inc*len(data[0])-1) #, False)
         return SS2
