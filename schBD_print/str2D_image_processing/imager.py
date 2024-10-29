@@ -59,12 +59,17 @@ def improve_view(string):
             if len(contents) == 0:
                 # already twisted
                 continue
-            if contents[0] == -1 and contents[1] == 1:  #condition for uplift
-                if len(set(contents[1:])) != 1:
-                    print ('weird rendering done, now can\'t get out')
-                    continue
-                func = 1
+            if contents[-1] == 1 and -1 in contents : # at least some sort of uplift
                 if _debug_view: print ( 'UPL')
+                if contents[0] == -1 and contents[1] == 1:  #condition for uplift
+                    # if len(set(contents[1:])) != 1:
+                    #     print ('weird rendering done, now can\'t get out')
+                    #     continue
+                    func = 1
+                else:
+                    print ('Uplift but complicated')
+                    pass
+                    func = 1
             elif len(set(contents)) == 1:
                 if _debug_view: print ( 'TWS')
                 # continue
@@ -103,11 +108,11 @@ def improve_view(string):
                 #         func = 1
 
 
-            # if func == 1 and twist_done == True:
-            if func == 1 :
+            if func == 1 and twist_done == True:
+            # if func == 1 :
                 SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, contents,branch_snips, False)
-            # elif func == 2 and twist_done == False:
-            elif func == 2 :
+            elif func == 2 and twist_done == False:
+            # elif func == 2 :
                 SS = twist(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),other_spc, inc, False)
             else:
                 print ('No function ')
