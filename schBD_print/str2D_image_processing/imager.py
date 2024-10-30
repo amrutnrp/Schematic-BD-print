@@ -48,11 +48,27 @@ def improve_view(string):
             else:  # left sided
                 prime_spc = lsl.copy()
                 other_spc = lsr.copy()
+            del lsr, lsl, bef, af
 
             sections, walls, contents, branch_snips  = find_walls_infected (snippet, col_idx, inc , prime_spc)
             # wall is absolute
             # sections [-1][-1] = len(snippet)  # replace -1 by actual value
             # print (col_idx, contents, ls[0], sections)
+
+            # adjust ls, lump_end and prime_spc ,other spc for change in ending
+            # lump_start --> 0:  x-lump_start
+            if lump_end != sections[-1][-1]:
+                if lump_end > sections[-1][1]  + lump_start :
+                    print ('Fatal unexpected error')
+                    raise SystemExit()
+                _temp, lump_end = lump_end, sections[-1][1]  + lump_start
+
+                for i in range ( _temp+1 , lump_end+1):
+                    ls .append ( i )
+                    prime_spc.append ( 0 )  # it's all occupied by the block
+
+                    bef,af = find_neighbour_spaces( _s_obj[i], col_idx)
+                    other_spc.append (  bef       if inc ==1 else     af    )
 
             func = 0
 
