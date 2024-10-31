@@ -43,38 +43,55 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
         ptr = 0 ; ptr2 = 1
 
         prev_height = 0
+        original_order = list(order)
+        expt_flag = False
 
-        while(row_sp < L2   and ptr < L-1 and ptr2 < L-1 ):
+        while(row_sp < L2   and ptr < L ): #ptr2 < L
             # get parameters
             row_sectn = order[ptr]
             H =sections[row_sectn][1]-  sections[row_sectn][0] +1
             W = walls[ row_sectn  ] - col_idx
             Avl_W = space_alt [row_sp]
 
-            if  W <= Avl_W : # it fits !
-                row_sp = row_sp - 1
-                moving_up = True
-                if row_sp <= low_limit_row:
-                    moving_up = False
+            if  W <= Avl_W : # the row fits !
+                #check if whole section fits or not
+                all_rows_4ThisSection = list(range(row_sp, row_sp+H ))
+                fit_flag = [  True if W <= space_alt[i] else False for i in all_rows_4ThisSection ]
+
+                if all(fit_flag) == True:
+                    # yes, whole section fits
                     stopAt_level[ ptr ] = row_sp
                     ptr, ptr2 = ptr + 1, ptr + 2
-                    low_limit_row = row_sp + H +1
-                    row_sp = max( row_sp + H, space_row)
-                    prev_height = H
-            elif moving_up == True:
-                moving_up = False
-                stopAt_level[ ptr ] = row_sp+1
-                ptr, ptr2 = ptr + 1, ptr + 2
-                low_limit_row = row_sp + H +1
-                row_sp = max( row_sp + H, space_row)
-                prev_height = H
-            elif row_sp > space_row:
-                stopAt_level[ ptr ] = stopAt_level[ ptr -1 ] + prev_height
-                ptr = ptr + 1
-                prev_height = H
-            else:
-                order[ptr], order[ptr2] = order[ptr2], order[ptr]
-                ptr2 += 1
+                    row_sp = row_sp + H
+                    # prev_height = H
+
+                    original_order = order.copy()
+                    expt_flag == False
+                else:
+                    # half of the section fits
+                    # othre half is blocked by intruders or a branch blocked by intruders
+                    pass
+                    #try using the next block
+                    order[ptr], order[ptr2] = order[ptr2], order[ptr]
+                    ptr2 += 1
+                    expt_flag = True
+                # ptr, ptr2 = ptr + 1, ptr + 2
+                # low_limit_row = row_sp + H +1
+                # row_sp = max( row_sp + H, space_row)
+                # prev_height = H
+            else: # it doesn't fit
+                if expt_flag == True and ptr2 == L:  # tried but failed, go to next row
+                    row_sp = row_sp + 1
+                    order = list(original_order)
+                    expt_flag = False
+                    ptr2 = ptr + 1
+                else: # Try fitting the next block
+                    #ptr2 < L
+                    order[ptr], order[ptr2] = order[ptr2], order[ptr]
+                    ptr2 += 1
+                    expt_flag = True
+            #stopAt_level[ ptr ] = stopAt_level[ ptr -1 ] + prev_height
+            # prev_height = H
 
             # print ( ptr, ptr2, order,row_sp )
             # strip2 = strip.copy()
@@ -91,22 +108,23 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
             return -3
         #Erase string section
         SS3= str_erase(_s_obj, col_idx, col_idx,  lump_start , lump_end, replaceBy= glue_string ) #,show = False)
-        # using 2 here is controvercial ??
         # get sections
-        snip = _s_obj [ lump_start: lump_end +2]
-        # data_snip = []
-        for i in range( L - 1):
+        snip = _s_obj [ lump_start: lump_end ]
+        data_snip = []
+        for i in range( L):
             #get the snip
-            j = i+1
+            #indexing for section/content
+            j = order[i]
             data = get_2D_area(snip, col_idx+inc, walls[j] -inc, sections[j][0], sections[j][1]) #, False)
-            # data_snip.append (data)
+            data_snip.append (data)
 
             #Erase previous area, in master canvas
             SS3 = str_erase ( SS3, col_idx+inc , walls[j]-inc, lump_start+ sections[j][0] ,  lump_start +sections[j][-1] , ' ')
 
+        for i in range( L):
             #paste in new area
             # overwrite sections
-            SS3 = str_paste( SS3 , data, lump_start + stopAt_level[i] , col_idx+1 , False)
+            SS3 = str_paste( SS3 , data_snip[i], lump_start + stopAt_level[i] , col_idx+1 , False)
 
         SS3 = build_lines(SS3, False)
 
