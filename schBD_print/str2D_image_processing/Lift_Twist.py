@@ -4,36 +4,52 @@ Created on Wed Oct 23 11:52:11 2024
 
 @author: amrutnp
 """
-from schBD_print.str2D_image_processing.base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror
+from schBD_print.str2D_image_processing.base import view_str, build_lines, str_erase, str_2D, str_paste, glue_string, get_2D_area, find_walls, str2D_mirror, find_neighbour_spaces
 
 def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, inc, contents,branch_snips, view_debug= False):
 
-        L= len(walls)
+        L2 = len(prime_spc)
         lump_start, lump_end = lump_start_end
 
         # strip = _s_obj [lump_start: lump_end +2]
 
+        #find status of each row
+        row_wise_content = [0] *  L2
+        row_wise_wall = [0] * L2
+        for idx_s , section in enumerate (sections):
+            for j in range (section[0] , section[1] +1 ):
+                row_wise_content [ j ] =  contents[idx_s]
+                row_wise_wall [j ] = walls [idx_s]
 
+        #find space margins, assuming chirden aren't present
+        space_alt = [0] *  len(prime_spc)
+        for i in range (len(prime_spc)):
+            if row_wise_content[i] == -1:
+                space_alt[i] = prime_spc [i]
+            elif row_wise_content[i] == 1:
+                #now find the spaces beyond the wall
+                wall_i = row_wise_wall [i]
+                bef, af = find_neighbour_spaces (snippet[i], wall_i)
+                space_alt[i] = wall_i + (af if inc ==1 else bef )
+            else:
+                #blocked area
+                space_alt[i] = -3
 
+        order = [i for i,Item in enumerate(contents) if contents[i] == 1 ]
+        L= len(order)
+        stopAt_level = [-1] * (L)
 
-
-        order = list(range (1,L))
-        stopAt_level = [-1] * (L-1)
-
-        space_row = sections[0][1] -1 +1
-        row_sp, row_sectn = space_row,1
-
+        row_sp = 0
         ptr = 0 ; ptr2 = 1
-        moving_up = False
-        low_limit_row = 0
+
         prev_height = 0
 
-        while(row_sp > 0  and ptr < L-1 and ptr2 < L-1 ):
+        while(row_sp < L2   and ptr < L-1 and ptr2 < L-1 ):
             # get parameters
             row_sectn = order[ptr]
             H =sections[row_sectn][1]-  sections[row_sectn][0] +1
             W = walls[ row_sectn  ] - col_idx
-            Avl_W = prime_spc [row_sp]
+            Avl_W = space_alt [row_sp]
 
             if  W <= Avl_W : # it fits !
                 row_sp = row_sp - 1
