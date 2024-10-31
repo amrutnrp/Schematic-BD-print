@@ -10,8 +10,7 @@ def improve_view(string):
     twist_done = False
     while(any_changed == True):
         vert_lines = get_vertical_hooks(_s_obj)
-        if _debug_view:
-            view_str( _s_obj  )
+
                 # print ( ptr, ptr2, order,row_sp )
 
 
@@ -76,7 +75,7 @@ def improve_view(string):
                 # already twisted
                 continue
             if contents[-1] == 1 and -1 in contents : # at least some sort of uplift
-                if _debug_view: print ( 'UPL')
+                if _debug_view: print ( 'UPL', twist_done)
                 if contents[0] == -1 and contents[1] == 1:  #condition for uplift
                     # if len(set(contents[1:])) != 1:
                     #     print ('weird rendering done, now can\'t get out')
@@ -87,43 +86,13 @@ def improve_view(string):
                     pass
                     func = 1
             elif len(set(contents)) == 1:
-                if _debug_view: print ( 'TWS')
+                if _debug_view: print ( 'TWS', twist_done)
                 # continue
                 func = 2
             else:
                 print ('weird condition')
-                # last_sp = last_sp_copy =  find_last_index(contents, -1)
-                # if last_sp != None:
-                #     last_sp += 1
-                #     while ( last_sp < len(contents)):
-                #         if contents [last_sp] != 1:
-                #             break
-                #         last_sp += 1
-                #     if last_sp < len(contents): # if it less then sometihng bas happened
-                #         pass
-                #     else:
-                #         pass #===
-                #         last_sp = last_sp_copy
-                #         contents = contents[ last_sp: ]
-                #         sections = sections[last_sp: ]
-                #         walls = walls[last_sp: ]
 
-                #         # adjust other values  , normalize them
-                #         origin = sections [0][0] -1
-
-                #         lump_start = lump_start +origin
-
-                #         prime_spc = [  prime_spc[kk] for kk, kk2 in enumerate(ls) if kk2>= origin]
-
-                #         sections = [  (i2-origin, j2-origin)  for i2,j2 in sections ]
-
-                #         snippet= _s_obj [lump_start: lump_end +2]
-
-                #         view_str(snippet)
-
-                #         func = 1
-
-
+            SS= None
             if func == 1 and twist_done == True:
             # if func == 1 :
                 SS = uplift(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),prime_spc, inc, contents,branch_snips, False)
@@ -131,20 +100,23 @@ def improve_view(string):
             # elif func == 2 :
                 SS = twist(_s_obj, snippet, col_idx, walls, sections, (lump_start, lump_end),other_spc, inc, False)
             else:
-                print ('No function ')
-            12
+                if _debug_view:
+                    print ('No function ')
+
             if type(SS) == list :
-                # view_str(SS)
+                if _debug_view:
+                    view_str( _s_obj  )
                 _s_obj = build_lines (SS, False)
                 _s_obj = str2D_strip(_s_obj)
                 any_changed = True
+                break
             else:
                 pass
                 # print ('no result')
-
             # return _s_obj
-    if any_changed == False and twist_done == False:
-        twist_done = True
+        if any_changed == False and twist_done == False:
+            twist_done = True
+            any_changed = True
 
     return _s_obj
 

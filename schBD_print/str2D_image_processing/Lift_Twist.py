@@ -75,10 +75,6 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
                     order[ptr], order[ptr2] = order[ptr2], order[ptr]
                     ptr2 += 1
                     expt_flag = True
-                # ptr, ptr2 = ptr + 1, ptr + 2
-                # low_limit_row = row_sp + H +1
-                # row_sp = max( row_sp + H, space_row)
-                # prev_height = H
             else: # it doesn't fit
                 if expt_flag == True and ptr2 == L:  # tried but failed, go to next row
                     row_sp = row_sp + 1
@@ -102,14 +98,20 @@ def uplift(_s_obj, snippet, col_idx, walls, sections, lump_start_end,prime_spc, 
             if view_debug: print ('can\'t improve')
             # print ('can\'t improve')
             return -1
-        # if all ( [ i==-1 for i in stopAt_level   ]) == True:
-        if  -1 in stopAt_level:
-            print ('Nothing changed')
-            return -3
+        
+        No_improve_flag = True
+        for j,i in  enumerate(order):
+            # print (sections[i][0] , stopAt_level[j])
+            if sections[i][0] != stopAt_level[j]:
+                No_improve_flag = False
+        if No_improve_flag:
+            # print ('can\'t improve')
+            return None
+            
         #Erase string section
         SS3= str_erase(_s_obj, col_idx, col_idx,  lump_start , lump_end, replaceBy= glue_string ) #,show = False)
         # get sections
-        snip = _s_obj [ lump_start: lump_end ]
+        snip = _s_obj [ lump_start: lump_end+1 ]
         data_snip = []
         for i in range( L):
             #get the snip
@@ -192,6 +194,17 @@ def twist (_s_obj, snippet, col_idx, walls, sections, lump_start_end, other_spc,
                 break
 
         #------------------------------------------------------------------
+        # check if any improvement was done
+        No_improve_flag = True
+        for j,i in  enumerate(order):
+            # print (sections[i][0] , stopAt_level[j])
+            if sections[i][0] != stopAt_level[j]:
+                No_improve_flag = False
+        if No_improve_flag:
+            # print ('can\'t improve')
+            return None
+
+        #-------------------------------------------------------------------
         # get sections
         snip = _s_obj [ lump_start: lump_end +2]
         SS2 = _s_obj.copy()
